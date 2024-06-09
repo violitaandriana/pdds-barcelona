@@ -25,25 +25,25 @@
       <li>
         <a href="#" class="nav-link link-dark">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-          Dashboard
+          Accident Report
         </a>
       </li>
       <li>
         <a href="#" class="nav-link link-dark">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-          Orders
+          Immigrant Country
         </a>
       </li>
       <li>
         <a href="#" class="nav-link link-dark">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-          Products
+          Birth Rate Pattern
         </a>
       </li>
       <li>
         <a href="#" class="nav-link link-dark">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-          Customers
+          Air Quality
         </a>
       </li>
     </ul>
