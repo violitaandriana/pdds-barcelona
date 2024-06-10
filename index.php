@@ -3,20 +3,19 @@ include './includes/head.php';
 
 ?>
 
-<!-- Sidebar -->
-
 <body>
+  <!-- Sidebar -->
   <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px; height: 100vh;">
     <div class="fs-4 text-center">Barcelona Datasets</div>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="index.php" class="nav-link">
+        <a href="index.php" class="nav-link active">
           Accident by Location
         </a>
       </li>
       <li class="nav-item">
-        <a href="immigrant.php" class="nav-link active">
+        <a href="immigrant.php" class="nav-link">
           Immigrant by Nationality
         </a>
       </li>
