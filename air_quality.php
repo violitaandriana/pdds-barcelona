@@ -3,9 +3,8 @@ include './includes/head.php';
 
 ?>
 
-<!-- Sidebar -->
-
 <body>
+  <!-- Sidebar -->
   <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px; height: 100vh;">
     <div class="fs-4 text-center">Barcelona Datasets</div>
     <hr>
@@ -16,7 +15,7 @@ include './includes/head.php';
         </a>
       </li>
       <li class="nav-item">
-        <a href="immigrant.php" class="nav-link active">
+        <a href="immigrant.php" class="nav-link">
           Immigrant by Nationality
         </a>
       </li>
@@ -26,7 +25,7 @@ include './includes/head.php';
         </a>
       </li>
       <li class="nav-item">
-        <a href="air_quality.php" class="nav-link">
+        <a href="air_quality.php" class="nav-link active">
           Air Quality by Neighborhood
         </a>
       </li>
