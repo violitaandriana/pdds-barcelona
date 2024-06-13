@@ -1,35 +1,36 @@
-<?php
-include './includes/head.php';
-
-?>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bar Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <body>
-  <!-- Sidebar -->
-  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px; height: 100vh;">
-    <div class="fs-4 text-center">Barcelona Datasets</div>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="index.php" class="nav-link active">
-          Accident by Location
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="immigrant.php" class="nav-link">
-          Immigrant by Nationality
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="birth.php" class="nav-link">
-          Birth Rate Pattern
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="air_quality.php" class="nav-link">
-          Air Quality by Neighborhood
-        </a>
-      </li>
-    </ul>
-    <hr>
-  </div>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const data = <?php echo json_encode([10, 20, 30, 40, 50]); ?>;
+        const labels = data.map((_, i) => 'Label ' + (i + 1));
+        
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '# of Votes',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
+</html>
