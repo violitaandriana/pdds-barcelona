@@ -20,13 +20,20 @@ function query($query) {
 }
 
 function findTopCountries($selectedYear) {
-    if ($selectedYear == "default" || $selectedYear == "") {
+    if ($selectedYear == "All" || $selectedYear == "") {
         $query = "SELECT nationality, SUM(total) AS total_immigrants FROM immigrant GROUP BY nationality ORDER BY total_immigrants DESC LIMIT 10";
     }
     else {
         $selectedYear = intval($selectedYear);
         $query = "SELECT nationality, SUM(total) AS total_immigrants FROM immigrant WHERE year = $selectedYear GROUP BY nationality ORDER BY total_immigrants DESC LIMIT 10";
     }
+    $data = query($query);
+
+    return $data;
+}
+
+function findTopDistricts($selectedYear) {
+    $query = "SELECT district_name, neighborhood_name, nationality, total FROM immigrant GROUP BY neighborhood_name ORDER BY total DESC";
     $data = query($query);
 
     return $data;

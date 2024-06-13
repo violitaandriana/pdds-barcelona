@@ -11,7 +11,7 @@
 
 .sidebar-container {
   display: block;
-  width: 280px; 
+  width: 280px;
   height: 100vh;
   background-color: #efefef;
 }
@@ -27,7 +27,7 @@
   border-radius: 5px;
 }
 
-.menu-btn i:hover  {
+.menu-btn i:hover {
   background-color: #efefef;
   border-radius: 5px;
   cursor: pointer;
