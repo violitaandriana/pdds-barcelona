@@ -32,6 +32,58 @@ $collection = $client->pdds_barcelona->Birth_Rate;
       overflow-y: auto;
       height: 100vh;
   }
+
+  .filter-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-item {
+      display: flex;
+      align-items: center;
+  }
+
+  .filter-item label {
+      margin-right: 10px;
+      font-weight: bold;
+  }
+
+  .filter-item select {
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      min-width: 150px;
+  }
+
+  .filter-item button {
+      margin-left: 20px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+
+  .filter-item button:hover {
+      background-color: #0056b3;
+  }
+
+  .table thead th {
+      background-color: #007bff;
+      color: #fff;
+  }
+
+  .table {
+      width: 100%;
+      margin-top: 20px;
+  }
 </style>
 
 <body>
@@ -58,11 +110,11 @@ $collection = $client->pdds_barcelona->Birth_Rate;
   <div class="main-content">
       <h1>Birth Rate Pattern</h1>
 
-      <!-- Dropdown untuk memilih tahun -->
-      <form method="GET" action="birth.php">
-          <div class="form-group">
-              <label for="year">Select Year:</label>
-              <select name="year" id="year" class="form-control">
+      <!-- Filter box -->
+      <div class="filter-box">
+          <form method="GET" action="birth.php" class="filter-item">
+              <label for="year">Year:</label>
+              <select name="year" id="year">
                   <option value="">All Years</option>
                   <?php
                   for ($i = 2013; $i <= 2017; $i++) {
@@ -71,11 +123,17 @@ $collection = $client->pdds_barcelona->Birth_Rate;
                   }
                   ?>
               </select>
-              <button type="submit" class="btn btn-primary mt-2">Filter</button>
-          </div>
-      </form>
+              <label for="gender" style="margin-left: 20px;">Gender:</label>
+              <select name="gender" id="gender">
+                  <option value="">All Genders</option>
+                  <option value="Boys" <?= (isset($_GET['gender']) && $_GET['gender'] == 'Boys') ? 'selected' : '' ?>>Boys</option>
+                  <option value="Girls" <?= (isset($_GET['gender']) && $_GET['gender'] == 'Girls') ? 'selected' : '' ?>>Girls</option>
+              </select>
+              <button type="submit">Filter</button>
+          </form>
+      </div>
 
-      <table class="table table-bordered mt-3">
+      <table class="table table-bordered">
           <thead>
               <tr>
                   <th>Year</th>
@@ -89,8 +147,20 @@ $collection = $client->pdds_barcelona->Birth_Rate;
           </thead>
           <tbody>
               <?php
+              // Mengambil nilai filter dari URL
               $yearFilter = isset($_GET['year']) ? (int)$_GET['year'] : null;
-              $filter = $yearFilter ? ['Year' => $yearFilter] : [];
+              $genderFilter = isset($_GET['gender']) ? $_GET['gender'] : null;
+
+              // Membuat filter query untuk MongoDB
+              $filter = [];
+              if ($yearFilter) {
+                  $filter['Year'] = $yearFilter;
+              }
+              if ($genderFilter) {
+                  $filter['Gender'] = $genderFilter;
+              }
+
+              // Query ke MongoDB dengan filter
               try {
                   $cursor = $collection->find($filter);
                   foreach ($cursor as $document) {
