@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 
 // Fetch distinct district names
 $districts = array();
-$districtResult = $conn->query("SELECT DISTINCT district_name FROM accidents");
+$districtResult = $conn->query("SELECT DISTINCT district_name FROM accident");
 while ($row = $districtResult->fetch_assoc()) {
     if (strtolower(trim($row['district_name'])) !== 'district name') {
         $districts[] = $row['district_name'];
@@ -31,7 +31,7 @@ $searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $selectedDistrict) {
     // Fetch distinct neighborhood names based on the selected district
-    $neighborhoodResult = $conn->query("SELECT DISTINCT neighborhood_name FROM accidents WHERE district_name = '" . $conn->real_escape_string($selectedDistrict) . "'");
+    $neighborhoodResult = $conn->query("SELECT DISTINCT neighborhood_name FROM accident WHERE district_name = '" . $conn->real_escape_string($selectedDistrict) . "'");
     while ($row = $neighborhoodResult->fetch_assoc()) {
         $filteredNeighborhoods[] = $row['neighborhood_name'];
     }
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $whereClauses[] = "(street LIKE '%" . $conn->real_escape_string($searchTerm) . "%' OR part_of_the_day LIKE '%" . $conn->real_escape_string($searchTerm) . "%')";
     }
 
-    $query = "SELECT * FROM accidents";
+    $query = "SELECT * FROM accident";
     if (count($whereClauses) > 0) {
         $query .= " WHERE " . implode(' AND ', $whereClauses);
     }
@@ -74,7 +74,7 @@ $chartData = array(
 );
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $chartQuery = "SELECT part_of_the_day, COUNT(*) as count FROM accidents";
+    $chartQuery = "SELECT part_of_the_day, sum(victims) as count FROM accident";
     if (count($whereClauses) > 0) {
         $chartQuery .= " WHERE " . implode(' AND ', $whereClauses);
     }
@@ -185,19 +185,19 @@ $conn->close();
         
         <div class="row">
             <div class="col">
-                <canvas id="accidentsChart"></canvas>
+                <canvas id="accidentChart"></canvas>
             </div>
         </div>
     </div>
 
     <script>
-        const ctx = document.getElementById('accidentsChart').getContext('2d');
-        const accidentsChart = new Chart(ctx, {
+        const ctx = document.getElementById('accidentChart').getContext('2d');
+        const accidentChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Dawn', 'Morning', 'Afternoon', 'Evening', 'Night'],
                 datasets: [{
-                    label: 'Number of Accidents',
+                    label: 'Number of accident',
                     data: [
                         <?php echo $chartData['Dawn']; ?>,
                         <?php echo $chartData['Morning']; ?>,
