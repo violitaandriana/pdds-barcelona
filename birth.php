@@ -7,8 +7,8 @@ use MongoDB\Client;
 $client = new Client("mongodb://localhost:27017");
 $collection = $client->pdds_barcelona->Birth_Rate;
 ?>
+
 <style>
-  <style>
   body {
       display: flex;
       margin: 0;
@@ -34,7 +34,6 @@ $collection = $client->pdds_barcelona->Birth_Rate;
   }
 </style>
 
-</style>
 <body>
   <div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-light">
     <div class="fs-4 text-center">Barcelona Datasets</div>
@@ -58,7 +57,25 @@ $collection = $client->pdds_barcelona->Birth_Rate;
 
   <div class="main-content">
       <h1>Birth Rate Pattern</h1>
-      <table class="table table-bordered">
+
+      <!-- Dropdown untuk memilih tahun -->
+      <form method="GET" action="birth.php">
+          <div class="form-group">
+              <label for="year">Select Year:</label>
+              <select name="year" id="year" class="form-control">
+                  <option value="">All Years</option>
+                  <?php
+                  for ($i = 2013; $i <= 2017; $i++) {
+                      $selected = (isset($_GET['year']) && $_GET['year'] == $i) ? 'selected' : '';
+                      echo "<option value=\"$i\" $selected>$i</option>";
+                  }
+                  ?>
+              </select>
+              <button type="submit" class="btn btn-primary mt-2">Filter</button>
+          </div>
+      </form>
+
+      <table class="table table-bordered mt-3">
           <thead>
               <tr>
                   <th>Year</th>
@@ -72,8 +89,10 @@ $collection = $client->pdds_barcelona->Birth_Rate;
           </thead>
           <tbody>
               <?php
+              $yearFilter = isset($_GET['year']) ? (int)$_GET['year'] : null;
+              $filter = $yearFilter ? ['Year' => $yearFilter] : [];
               try {
-                  $cursor = $collection->find();
+                  $cursor = $collection->find($filter);
                   foreach ($cursor as $document) {
                       echo "<tr>
                               <td>{$document['Year']}</td>
