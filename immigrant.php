@@ -199,5 +199,7 @@ body {
       }
     }
   })
+
+  closeSidebar();
   </script>
 </body>
