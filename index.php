@@ -1,4 +1,6 @@
 <?php
+include "./includes/head.php";
+
 $servername = "localhost";  // Update with your server details
 $username = "root";         // Update with your database username
 $password = "";             // Update with your database password
@@ -280,6 +282,8 @@ $conn->close();
                 menuButton.style.display = 'none';
                 gridContainer.style.gridTemplateColumns = '1fr 3fr';
             }
+
+            closeSidebar();
         </script>
 
 </body>
