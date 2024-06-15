@@ -128,6 +128,10 @@ try {
     </div>
     <div class="birth-content">
       <h1>Birth Rate Pattern</h1>
+      <p>
+        Birth Rate Pattern memberikan visualisasi untuk mengetahui pola kelahiran (melihat apakah ada peningkatan / 
+        penurunan) pada distrik tertentu. Filter berdasarkan tahun mulai hingga tahun selesai dan gender.
+      </p>
       <div class="birth-filter">
         <div class="filter-box">
           <form method="GET" action="birth.php" class="filter-item">
