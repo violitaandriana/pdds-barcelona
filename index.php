@@ -1,35 +1,37 @@
 <?php
-include './includes/head.php';
+include "./includes/head.php";
+require "functions.php";
+
+$year = '';
+
+$rows = findTopDistricts($year);
 
 ?>
 
 <body>
-  <!-- Sidebar -->
-  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px; height: 100vh;">
-    <div class="fs-4 text-center">Barcelona Datasets</div>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="index.php" class="nav-link active">
-          Accident by Location
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="immigrant.php" class="nav-link">
-          Immigrant by Nationality
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="birth.php" class="nav-link">
-          Birth Rate Pattern
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="air_quality.php" class="nav-link">
-          Air Quality by Neighborhood
-        </a>
-      </li>
-    </ul>
-    <hr>
-  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">District Name</th>
+        <th scope="col">Neighborhood Name</th>
+        <th scope="col">Nationality</th>
+        <th scope="col">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($rows as $row) { ?>
+      <tr>
+        <td><?= $row['district_name'] ?></td>
+        <td><?= $row['neighborhood_name'] ?></td>
+        <td><?= $row['nationality'] ?></td>
+        <td><?= $row['total'] ?></td>
+      </tr>
+      <?php  } ?>
+    </tbody>
+  </table>
+  <script>
+
+  </script>
 </body>
+
+</html>
