@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $chartQuery .= " WHERE " . implode(' AND ', $whereClauses);
     }
     $chartQuery .= " GROUP BY part_of_the_day";
-    
+
     $chartResult = $conn->query($chartQuery);
     while ($row = $chartResult->fetch_assoc()) {
         $partOfTheDay = $row['part_of_the_day'];
@@ -105,120 +105,183 @@ $conn->close();
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div class="container">
-        <form method="post" action="">
-            <div class="row my-3">
-                <div class="col">
-                    <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($searchTerm); ?>">
+    <div class="grid-container">
+        <!-- Sidebar -->
+        <div class="sidebar-container">
+            <div class="sidebar-title">
+                <div class="text-end close-btn">
+                    <i class='bx bx-x'></i>
                 </div>
-                <div class="col">
-                    <select class="form-select" name="district" aria-label="Select District" onchange="this.form.submit()">
-                        <option value="">Select District</option>
-                        <?php foreach ($districts as $district) : ?>
-                            <option value="<?php echo htmlspecialchars($district); ?>" <?php if ($selectedDistrict == $district) echo 'selected="selected"'; ?>><?php echo htmlspecialchars($district); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col">
-                    <select class="form-select" name="neighborhood" aria-label="Select Neighborhood">
-                        <option value="">Select Neighborhood</option>
-                        <?php foreach ($filteredNeighborhoods as $neighborhood) : ?>
-                            <option value="<?php echo htmlspecialchars($neighborhood); ?>" <?php if ($selectedNeighborhood == $neighborhood) echo 'selected="selected"'; ?>><?php echo htmlspecialchars($neighborhood); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col">
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                </div>
+                <h4 class="text-center">
+                    Barcelona Datasets
+                </h4>
             </div>
-        </form>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="index.php" class="nav-link">
+                        Accident by Location
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="immigrant.php" class="nav-link active">
+                        Immigrant by Nationality
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="birth.php" class="nav-link">
+                        Birth Rate Pattern
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="air_quality.php" class="nav-link">
+                        Air Quality by Neighborhood
+                    </a>
+                </li>
+            </ul>
+            <hr>
+        </div>
+        <div class="menu-btn">
+            <i class='bx bx-menu'></i>
+        </div>
+        <div class="container">
+            <form method="post" action="">
+                <div class="row my-3">
+                    <div class="col">
+                        <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                    </div>
+                    <div class="col">
+                        <select class="form-select" name="district" aria-label="Select District" onchange="this.form.submit()">
+                            <option value="">Select District</option>
+                            <?php foreach ($districts as $district) : ?>
+                                <option value="<?php echo htmlspecialchars($district); ?>" <?php if ($selectedDistrict == $district) echo 'selected="selected"'; ?>><?php echo htmlspecialchars($district); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" name="neighborhood" aria-label="Select Neighborhood">
+                            <option value="">Select Neighborhood</option>
+                            <?php foreach ($filteredNeighborhoods as $neighborhood) : ?>
+                                <option value="<?php echo htmlspecialchars($neighborhood); ?>" <?php if ($selectedNeighborhood == $neighborhood) echo 'selected="selected"'; ?>><?php echo htmlspecialchars($neighborhood); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
 
-        <?php if (!empty($filteredResults)) : ?>
-            <div class="row">
-                <div class="col">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>District Name</th>
-                                <th>Neighborhood Name</th>
-                                <th>Street</th>
-                                <th>Weekday</th>
-                                <th>Month</th>
-                                <th>Day</th>
-                                <th>Hour</th>
-                                <th>Part Of The Day</th>
-                                <th>Mild Injuries</th>
-                                <th>Serious Injuries</th>
-                                <th>Victims</th>
-                                <th>Vehicle Involved</th>
-                                <!-- Add more columns as needed -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($filteredResults as $result) : ?>
+            <?php if (!empty($filteredResults)) : ?>
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-striped">
+                            <thead>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($result['id']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['district_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['neighborhood_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['street']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['weekday']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['month']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['day']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['hour']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['part_of_the_day']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['mild_injuries']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['serious_injuries']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['victims']); ?></td>
-                                    <td><?php echo htmlspecialchars($result['vehicles_involved']); ?></td>
+                                    <th>Id</th>
+                                    <th>District Name</th>
+                                    <th>Neighborhood Name</th>
+                                    <th>Street</th>
+                                    <th>Weekday</th>
+                                    <th>Month</th>
+                                    <th>Day</th>
+                                    <th>Hour</th>
+                                    <th>Part Of The Day</th>
+                                    <th>Mild Injuries</th>
+                                    <th>Serious Injuries</th>
+                                    <th>Victims</th>
+                                    <th>Vehicle Involved</th>
                                     <!-- Add more columns as needed -->
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($filteredResults as $result) : ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($result['id']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['district_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['neighborhood_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['street']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['weekday']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['month']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['day']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['hour']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['part_of_the_day']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['mild_injuries']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['serious_injuries']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['victims']); ?></td>
+                                        <td><?php echo htmlspecialchars($result['vehicles_involved']); ?></td>
+                                        <!-- Add more columns as needed -->
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <div class="row">
+                <div class="col">
+                    <canvas id="accidentChart"></canvas>
                 </div>
             </div>
-        <?php endif; ?>
-        
-        <div class="row">
-            <div class="col">
-                <canvas id="accidentChart"></canvas>
-            </div>
         </div>
-    </div>
 
-    <script>
-        const ctx = document.getElementById('accidentChart').getContext('2d');
-        const accidentChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Dawn', 'Morning', 'Afternoon', 'Evening', 'Night'],
-                datasets: [{
-                    label: 'Number of accident',
-                    data: [
-                        <?php echo $chartData['Dawn']; ?>,
-                        <?php echo $chartData['Morning']; ?>,
-                        <?php echo $chartData['Afternoon']; ?>,
-                        <?php echo $chartData['Evening']; ?>,
-                        <?php echo $chartData['Night']; ?>
-                    ],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+        <script>
+            const ctx = document.getElementById('accidentChart').getContext('2d');
+            const accidentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Dawn', 'Morning', 'Afternoon', 'Evening', 'Night'],
+                    datasets: [{
+                        label: 'Number of accident',
+                        data: [
+                            <?php echo $chartData['Dawn']; ?>,
+                            <?php echo $chartData['Morning']; ?>,
+                            <?php echo $chartData['Afternoon']; ?>,
+                            <?php echo $chartData['Evening']; ?>,
+                            <?php echo $chartData['Night']; ?>
+                        ],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
+            });
+
+            // SCRIPT SIDE BAR
+            const sidebarContainer = document.querySelector(".sidebar-container");
+            const gridContainer = document.querySelector(".grid-container");
+            const closeButton = document.querySelector(".close-btn");
+            const menuButton = document.querySelector(".menu-btn");
+
+            closeButton.addEventListener('click', closeSidebar);
+            menuButton.addEventListener('click', openSidebar);
+
+            function closeSidebar() {
+                console.log('close');
+                sidebarContainer.style.display = 'none';
+                menuButton.style.display = 'block';
+                gridContainer.style.gridTemplateColumns = 'auto';
             }
-        });
-    </script>
+
+            function openSidebar() {
+                sidebarContainer.style.display = 'block';
+                menuButton.style.display = 'none';
+                gridContainer.style.gridTemplateColumns = '1fr 3fr';
+            }
+        </script>
+
 </body>
 
 </html>
