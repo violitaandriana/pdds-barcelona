@@ -9,7 +9,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Initialize selected district and neighborhood variables
 $selectedDistrict = isset($_POST['district']) ? $_POST['district'] : '';
 $selectedNeighborhood = isset($_POST['neighborhood']) ? $_POST['neighborhood'] : '';
 $searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
@@ -67,9 +66,10 @@ $totalAccidents = $totalAccidentsResult->fetch_assoc()['total'];
 
 // PERHITUNGAN JUMLAH CEDERA SERIUS DAN RINGAN
 $injuryQuery = "SELECT 
-    SUM(CASE WHEN serious_injuries = 'Serious' THEN 1 ELSE 0 END) as seriousInjuries,
-    SUM(CASE WHEN mild_injuries = 'Mild' THEN 1 ELSE 0 END) as mildInjuries
-FROM accident";
+    SUM(serious_injuries) as seriousInjuries,
+    SUM(mild_injuries) as mildInjuries
+    FROM accident";
+
 if (count($whereClauses) > 0) {
     $injuryQuery .= " WHERE " . implode(' AND ', $whereClauses);
 }
@@ -130,10 +130,6 @@ $conn->close();
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-        }
-
-        .chart-container .col {
-            flex: 1;
         }
 
         .chart-container .col-right {
@@ -224,6 +220,11 @@ $conn->close();
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="col">
+                        <br>
+                        <a href="accident.php" class="btn btn-form" role="button" style="background-color: pink;">Lihat Data</a>
+                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                    </div>
                 </div>
             </form>
 
@@ -237,7 +238,7 @@ $conn->close();
                 <div class="col col-right">
                     <!-- CARD TOTAL KORBAN -->
                     <div class="card card-total">
-                        <div class="card-body" style="text-align: center;">
+                        <div class="card-body">
                             <p class="card-title">TOTAL KORBAN</p>
                             <p class="card-text" style="font-size: 30px;"><?php echo $totalAccidents; ?></p>
                         </div>
@@ -252,6 +253,14 @@ $conn->close();
         </div>
 
         <script>
+            // RISET FILTER
+            function resetFilters() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('districtSelect').value = '';
+                document.getElementById('neighborhoodSelect').value = '';
+                document.getElementById('filterForm').submit();
+            }
+
             // AGAR FILTER BISA OTOMATIS
             document.getElementById('searchInput').addEventListener('input', function() {
                 document.getElementById('filterForm').submit();
