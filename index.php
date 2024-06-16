@@ -1,21 +1,21 @@
 <?php
 include "./includes/head.php";
 
-$servername = "localhost";  // Update with your server details
-$username = "root";         // Update with your database username
-$password = "";             // Update with your database password
-$dbname = "pdds_barcelona"; // Update with your database name
+// KONEKSI KE DB
+$conn = mysqli_connect("localhost", "root", "", "pdds_barcelona");
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
+// CEK KONEKSI
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch distinct district names
-$districts = array();
+// Initialize selected district and neighborhood variables
+$selectedDistrict = isset($_POST['district']) ? $_POST['district'] : '';
+$selectedNeighborhood = isset($_POST['neighborhood']) ? $_POST['neighborhood'] : '';
+$searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
+
+// AMBIL DATA DISTRICT NAME
+$districts = array(); //yg nampung hasil district
 $districtResult = $conn->query("SELECT DISTINCT district_name FROM accident");
 while ($row = $districtResult->fetch_assoc()) {
     if (strtolower(trim($row['district_name'])) !== 'district name') {
@@ -23,50 +23,62 @@ while ($row = $districtResult->fetch_assoc()) {
     }
 }
 
-// Initialize variable for filtered neighborhoods
-$filteredNeighborhoods = array();
-
-// Initialize selected district and neighborhood variables
-$selectedDistrict = isset($_POST['district']) ? $_POST['district'] : '';
-$selectedNeighborhood = isset($_POST['neighborhood']) ? $_POST['neighborhood'] : '';
-$searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $selectedDistrict) {
-    // Fetch distinct neighborhood names based on the selected district
+// AMBIL DATA NEIGHBORHOOD NAME BERDASAR DISTRICT NAME
+$neighborhood = array(); //yg nampung hasil neighborhood
+if ($selectedDistrict) {
     $neighborhoodResult = $conn->query("SELECT DISTINCT neighborhood_name FROM accident WHERE district_name = '" . $conn->real_escape_string($selectedDistrict) . "'");
     while ($row = $neighborhoodResult->fetch_assoc()) {
-        $filteredNeighborhoods[] = $row['neighborhood_name'];
+        $neighborhood[] = $row['neighborhood_name'];
     }
 }
 
-// Initialize variable for filtered results
+// FILTER
 $filteredResults = array();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $whereClauses = array();
+$whereClauses = array();
 
-    if ($selectedDistrict) {
-        $whereClauses[] = "district_name = '" . $conn->real_escape_string($selectedDistrict) . "'";
-    }
-    if ($selectedNeighborhood) {
-        $whereClauses[] = "neighborhood_name = '" . $conn->real_escape_string($selectedNeighborhood) . "'";
-    }
-    if ($searchTerm) {
-        $whereClauses[] = "(street LIKE '%" . $conn->real_escape_string($searchTerm) . "%' OR part_of_the_day LIKE '%" . $conn->real_escape_string($searchTerm) . "%')";
-    }
-
-    $query = "SELECT * FROM accident";
-    if (count($whereClauses) > 0) {
-        $query .= " WHERE " . implode(' AND ', $whereClauses);
-    }
-
-    $result = $conn->query($query);
-    while ($row = $result->fetch_assoc()) {
-        $filteredResults[] = $row;
-    }
+if ($selectedDistrict) {
+    $whereClauses[] = "district_name = '" . $conn->real_escape_string($selectedDistrict) . "'";
+}
+if ($selectedNeighborhood) {
+    $whereClauses[] = "neighborhood_name = '" . $conn->real_escape_string($selectedNeighborhood) . "'";
+}
+if ($searchTerm) {
+    $whereClauses[] = "(street LIKE '%" . $conn->real_escape_string($searchTerm) . "%' OR part_of_the_day LIKE '%" . $conn->real_escape_string($searchTerm) . "%')";
 }
 
-// Fetch data for the bar chart
+$query = "SELECT * FROM accident";
+if (count($whereClauses) > 0) {
+    $query .= " WHERE " . implode(' AND ', $whereClauses);
+}
+
+$result = $conn->query($query);
+while ($row = $result->fetch_assoc()) {
+    $filteredResults[] = $row;
+}
+
+// PERHITUNGAN TOTAL KECELAKAAN
+$totalAccidentsQuery = "SELECT SUM(victims) as total FROM accident";
+if (count($whereClauses) > 0) {
+    $totalAccidentsQuery .= " WHERE " . implode(' AND ', $whereClauses);
+}
+$totalAccidentsResult = $conn->query($totalAccidentsQuery);
+$totalAccidents = $totalAccidentsResult->fetch_assoc()['total'];
+
+// PERHITUNGAN JUMLAH CEDERA SERIUS DAN RINGAN
+$injuryQuery = "SELECT 
+    SUM(CASE WHEN serious_injuries = 'Serious' THEN 1 ELSE 0 END) as seriousInjuries,
+    SUM(CASE WHEN mild_injuries = 'Mild' THEN 1 ELSE 0 END) as mildInjuries
+FROM accident";
+if (count($whereClauses) > 0) {
+    $injuryQuery .= " WHERE " . implode(' AND ', $whereClauses);
+}
+$injuryResult = $conn->query($injuryQuery);
+$injuryData = $injuryResult->fetch_assoc();
+$seriousInjuries = $injuryData['seriousInjuries'];
+$mildInjuries = $injuryData['mildInjuries'];
+
+// BAR CHART
 $chartData = array(
     'Dawn' => 0,
     'Morning' => 0,
@@ -75,26 +87,25 @@ $chartData = array(
     'Night' => 0
 );
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $chartQuery = "SELECT part_of_the_day, sum(victims) as count FROM accident";
-    if (count($whereClauses) > 0) {
-        $chartQuery .= " WHERE " . implode(' AND ', $whereClauses);
-    }
-    $chartQuery .= " GROUP BY part_of_the_day";
+// PERHITUNGAN KORBAN BERDASAR PART OF DAY
+$chartQuery = "SELECT part_of_the_day, sum(victims) as count FROM accident";
+if (count($whereClauses) > 0) {
+    $chartQuery .= " WHERE " . implode(' AND ', $whereClauses);
+}
+$chartQuery .= " GROUP BY part_of_the_day";
 
-    $chartResult = $conn->query($chartQuery);
-    while ($row = $chartResult->fetch_assoc()) {
-        $partOfTheDay = $row['part_of_the_day'];
-        $count = $row['count'];
-        if (isset($chartData[$partOfTheDay])) {
-            $chartData[$partOfTheDay] = $count;
-        }
+$chartResult = $conn->query($chartQuery);
+while ($row = $chartResult->fetch_assoc()) {
+    $partOfTheDay = $row['part_of_the_day'];
+    $count = $row['count'];
+    if (isset($chartData[$partOfTheDay])) {
+        $chartData[$partOfTheDay] = $count;
     }
 }
 
-// Close connection
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -103,25 +114,50 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accident Report 2017</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
 
     <style>
-      .container-chart{
-        width: 1000px !important;
-        height: 500px !important;
-        margin: 0 auto;
-      }
-    </style>
+        .container-chart {
+            width: 100% !important;
+            margin: 0 auto;
+        }
 
+        .chart-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .chart-container .col {
+            flex: 1;
+        }
+
+        .chart-container .col-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .card-total {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .pie-chart-container {
+            width: 100%;
+            max-width: 300px;
+        }
+    </style>
 </head>
 
 <body>
     <div class="grid-container">
-        <!-- Sidebar -->
+        <!-- SIDEBAR -->
         <div class="sidebar-container">
             <div class="sidebar-title">
                 <div class="text-end close-btn">
@@ -159,14 +195,20 @@ $conn->close();
         <div class="menu-btn">
             <i class='bx bx-menu'></i>
         </div>
+
+        <!-- HASIL -->
         <div class="container">
-            <form method="post" action="">
+            <h3 class="text-center">ACCIDENT BY LOCATION</h3>
+
+            <form method="post" action="" id="filterForm">
                 <div class="row my-3">
                     <div class="col">
-                        <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                        <label for="">FIND BY SEARCH</label>
+                        <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($searchTerm); ?>" id="searchInput">
                     </div>
                     <div class="col">
-                        <select class="form-select" name="district" aria-label="Select District" onchange="this.form.submit()">
+                        <label for="">SELECT DISCTRICT</label>
+                        <select class="form-select" name="district" aria-label="Select District" id="districtSelect">
                             <option value="">Select District</option>
                             <?php foreach ($districts as $district) : ?>
                                 <option value="<?php echo htmlspecialchars($district); ?>" <?php if ($selectedDistrict == $district) echo 'selected="selected"'; ?>><?php echo htmlspecialchars($district); ?></option>
@@ -174,36 +216,54 @@ $conn->close();
                         </select>
                     </div>
                     <div class="col">
-                        <select class="form-select" name="neighborhood" aria-label="Select Neighborhood">
+                        <label for="">SELECT NEIGHBORHOOD</label>
+                        <select class="form-select" name="neighborhood" aria-label="Select Neighborhood" id="neighborhoodSelect">
                             <option value="">Select Neighborhood</option>
-                            <?php foreach ($filteredNeighborhoods as $neighborhood) : ?>
+                            <?php foreach ($neighborhood as $neighborhood) : ?>
                                 <option value="<?php echo htmlspecialchars($neighborhood); ?>" <?php if ($selectedNeighborhood == $neighborhood) echo 'selected="selected"'; ?>><?php echo htmlspecialchars($neighborhood); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </div>
                 </div>
             </form>
 
-            <?php if (!empty($filteredResults)) : ?>
-                <div class="row">
-                    <div class="col">
-                        
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <div class="row">
+            <div class="chart-container">
+                <!-- BAR CHART -->
                 <div class="col container-chart">
-                    
-                    <canvas id="accidentChart" ></canvas>
+                    <canvas id="accidentChart" height="230"></canvas>
+                </div>
+
+                <!-- CARD DAN PIE CHART -->
+                <div class="col col-right">
+                    <!-- CARD TOTAL KORBAN -->
+                    <div class="card card-total">
+                        <div class="card-body" style="text-align: center;">
+                            <p class="card-title">TOTAL KORBAN</p>
+                            <p class="card-text" style="font-size: 30px;"><?php echo $totalAccidents; ?></p>
+                        </div>
+                    </div>
+
+                    <!-- PIE CHART PERBANDINGAN JUMLAH CEDERA RINGAN DAN SERIUS  -->
+                    <div class="pie-chart-container">
+                        <canvas id="injuryChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         <script>
+            // AGAR FILTER BISA OTOMATIS
+            document.getElementById('searchInput').addEventListener('input', function() {
+                document.getElementById('filterForm').submit();
+            });
+            document.getElementById('districtSelect').addEventListener('change', function() {
+                document.getElementById('filterForm').submit();
+            });
+            document.getElementById('neighborhoodSelect').addEventListener('change', function() {
+                document.getElementById('filterForm').submit();
+            });
+
+            // BAR CHART
             const ctx = document.getElementById('accidentChart').getContext('2d');
             const accidentChart = new Chart(ctx, {
                 type: 'bar',
@@ -218,8 +278,18 @@ $conn->close();
                             <?php echo $chartData['Evening']; ?>,
                             <?php echo $chartData['Night']; ?>
                         ],
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: ["rgba(255, 99, 132, 0.2)",
+                            "rgba(255, 159, 64, 0.2)",
+                            "rgba(255, 205, 86, 0.2)",
+                            "rgba(75, 192, 192, 0.2)",
+                            "rgba(54, 162, 235, 0.2)"
+                        ],
+                        borderColor: ["rgb(255, 99, 132)",
+                            "rgb(255, 159, 64)",
+                            "rgb(255, 205, 86)",
+                            "rgb(75, 192, 192)",
+                            "rgb(54, 162, 235)"
+                        ],
                         borderWidth: 1
                     }]
                 },
@@ -229,6 +299,31 @@ $conn->close();
                             beginAtZero: true
                         }
                     }
+                }
+            });
+
+            // PIE CHART
+            const pieCtx = document.getElementById('injuryChart').getContext('2d');
+            const injuryChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Serious Injuries', 'Mild Injuries'],
+                    datasets: [{
+                        label: 'Injuries',
+                        data: [<?php echo $seriousInjuries; ?>, <?php echo $mildInjuries; ?>],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
                 }
             });
 
@@ -256,7 +351,7 @@ $conn->close();
 
             closeSidebar();
         </script>
-
+    </div>
 </body>
 
 </html>
