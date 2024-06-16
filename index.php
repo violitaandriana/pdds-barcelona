@@ -1,4 +1,6 @@
 <?php
+include "./includes/head.php";
+
 $servername = "localhost";  // Update with your server details
 $username = "root";         // Update with your database username
 $password = "";             // Update with your database password
@@ -106,6 +108,15 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+      .container-chart{
+        width: 1000px !important;
+        height: 500px !important;
+        margin: 0 auto;
+      }
+    </style>
+
 </head>
 
 <body>
@@ -123,12 +134,12 @@ $conn->close();
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link">
+                    <a href="index.php" class="nav-link active">
                         Accident by Location
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="immigrant.php" class="nav-link active">
+                    <a href="immigrant.php" class="nav-link">
                         Immigrant by Nationality
                     </a>
                 </li>
@@ -179,53 +190,15 @@ $conn->close();
             <?php if (!empty($filteredResults)) : ?>
                 <div class="row">
                     <div class="col">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>District Name</th>
-                                    <th>Neighborhood Name</th>
-                                    <th>Street</th>
-                                    <th>Weekday</th>
-                                    <th>Month</th>
-                                    <th>Day</th>
-                                    <th>Hour</th>
-                                    <th>Part Of The Day</th>
-                                    <th>Mild Injuries</th>
-                                    <th>Serious Injuries</th>
-                                    <th>Victims</th>
-                                    <th>Vehicle Involved</th>
-                                    <!-- Add more columns as needed -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($filteredResults as $result) : ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($result['id']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['district_name']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['neighborhood_name']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['street']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['weekday']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['month']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['day']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['hour']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['part_of_the_day']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['mild_injuries']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['serious_injuries']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['victims']); ?></td>
-                                        <td><?php echo htmlspecialchars($result['vehicles_involved']); ?></td>
-                                        <!-- Add more columns as needed -->
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                        
                     </div>
                 </div>
             <?php endif; ?>
 
             <div class="row">
-                <div class="col">
-                    <canvas id="accidentChart"></canvas>
+                <div class="col container-chart">
+                    
+                    <canvas id="accidentChart" ></canvas>
                 </div>
             </div>
         </div>
@@ -280,6 +253,8 @@ $conn->close();
                 menuButton.style.display = 'none';
                 gridContainer.style.gridTemplateColumns = '1fr 3fr';
             }
+
+            closeSidebar();
         </script>
 
 </body>
