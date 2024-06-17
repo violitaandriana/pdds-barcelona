@@ -15,6 +15,7 @@
   width: 280px;
   height: 100vh;
   background-color: #efefef;
+  z-index: 10;
 }
 
 .sidebar-title > .close-btn {

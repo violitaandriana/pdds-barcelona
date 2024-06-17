@@ -2,16 +2,17 @@
 // koneksi ke database
 $conn = mysqli_connect("localhost", "root", "", "pdds_barcelona");
 
-if(!$conn) {
-    die("Connection Failed : " .mysqli_connect_error());
+if (!$conn) {
+    die("Connection Failed : " . mysqli_connect_error());
 }
 
-function query($query) {
+function query($query)
+{
     // biar bisa ambil $conn di luar function
     global $conn;
     $result = mysqli_query($conn, $query);
     $rows = [];
-    
+
     while ($row = mysqli_fetch_assoc($result)) {
         // append row ke dalam array rows
         $rows[] = $row;
@@ -19,11 +20,11 @@ function query($query) {
     return $rows;
 }
 
-function findTopCountries($selectedYear) {
+function getTopCountries($selectedYear)
+{
     if ($selectedYear == "All" || $selectedYear == "") {
         $query = "SELECT nationality, SUM(total) AS total_immigrants FROM immigrant GROUP BY nationality ORDER BY total_immigrants DESC LIMIT 10";
-    }
-    else {
+    } else {
         $selectedYear = intval($selectedYear);
         $query = "SELECT nationality, SUM(total) AS total_immigrants FROM immigrant WHERE year = $selectedYear GROUP BY nationality ORDER BY total_immigrants DESC LIMIT 10";
     }
@@ -32,9 +33,49 @@ function findTopCountries($selectedYear) {
     return $data;
 }
 
-function findTopDistricts($selectedYear) {
-    $query = "SELECT district_name, neighborhood_name, nationality, total FROM immigrant GROUP BY neighborhood_name ORDER BY total DESC";
+function getNationality()
+{
+    $query = "SELECT DISTINCT(nationality) FROM immigrant ORDER BY nationality";
     $data = query($query);
 
     return $data;
+}
+
+function getDistrictTotalByNationality($nationality)
+{
+    if ($nationality == "All" || $nationality == "") {
+        $query = "SELECT district_name, SUM(total) AS total_immigrants FROM immigrant GROUP BY district_name";
+    }
+    else {
+        $nationality = strval($nationality);
+        $query = "SELECT district_name, SUM(total) AS total_immigrants FROM immigrant WHERE nationality = '$nationality' GROUP BY district_name";
+    }
+    $data = query($query);
+
+    return $data;
+}
+
+function determineQuality($value, $indicator) {
+    if ($indicator == 'O3') {
+        if ($value >= 0 && $value <= 54) return 'Good';
+        if ($value >= 55 && $value <= 70) return 'Moderate';
+        if ($value >= 71 && $value <= 85) return 'Unhealthy for Sensitive Groups';
+        if ($value >= 86 && $value <= 105) return 'Unhealthy';
+        if ($value >= 106 && $value <= 200) return 'Very Unhealthy';
+        return 'Hazardous';
+    } elseif ($indicator == 'NO2') {
+        if ($value >= 0 && $value <= 53) return 'Good';
+        if ($value >= 54 && $value <= 100) return 'Moderate';
+        if ($value >= 101 && $value <= 360) return 'Unhealthy for Sensitive Groups';
+        if ($value >= 361 && $value <= 649) return 'Unhealthy';
+        if ($value >= 650 && $value <= 1249) return 'Very Unhealthy';
+        return 'Hazardous';
+    } elseif ($indicator == 'PM10') {
+        if ($value >= 0 && $value <= 54) return 'Good';
+        if ($value >= 55 && $value <= 154) return 'Moderate';
+        if ($value >= 155 && $value <= 254) return 'Unhealthy for Sensitive Groups';
+        if ($value >= 255 && $value <= 354) return 'Unhealthy';
+        if ($value >= 355 && $value <= 424) return 'Very Unhealthy';
+        return 'Hazardous';
+    }
 }
