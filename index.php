@@ -131,7 +131,7 @@ $conn->close();
                 </li>
                 <li class="nav-item">
                     <a href="immigrant.php" class="nav-link active">
-                        Immigrant by Nationality
+                        Immigrant Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
@@ -141,7 +141,7 @@ $conn->close();
                 </li>
                 <li class="nav-item">
                     <a href="air_quality.php" class="nav-link">
-                        Air Quality by Neighborhood
+                        Air Quality Dashboard
                     </a>
                 </li>
             </ul>

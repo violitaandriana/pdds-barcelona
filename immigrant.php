@@ -97,7 +97,7 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
         </li>
         <li class="nav-item">
           <a href="air_quality.php" class="nav-link">
-            Air Quality by Neighborhood
+            Air Quality Dashboard
           </a>
         </li>
       </ul>

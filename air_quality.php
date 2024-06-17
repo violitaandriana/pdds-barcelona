@@ -141,7 +141,7 @@ foreach ($documents as $document) {
   // sidebar
   const sidebarContainer = document.querySelector(".sidebar-container");
   const gridContainer = document.querySelector(".grid-container");
-  const dashboard = document.querySelector(".immigrant-dashboard");
+  const dashboard = document.querySelector(".air-quality-dashboard");
   const closeButton = document.querySelector(".close-btn");
   const menuButton = document.querySelector(".menu-btn");
 

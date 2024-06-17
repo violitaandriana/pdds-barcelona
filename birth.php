@@ -112,13 +112,13 @@ try {
           <a href="index.php" class="nav-link">Accident by Location</a>
         </li>
         <li class="nav-item">
-          <a href="immigrant.php" class="nav-link">Immigrant by Nationality</a>
+          <a href="immigrant.php" class="nav-link">Immigrant Dashboard</a>
         </li>
         <li class="nav-item">
           <a href="birth.php" class="nav-link active">Birth Rate Pattern</a>
         </li>
         <li class="nav-item">
-          <a href="air_quality.php" class="nav-link">Air Quality by Neighborhood</a>
+          <a href="air_quality.php" class="nav-link">Air Quality Dashboard</a>
         </li>
       </ul>
       <hr>
