@@ -157,13 +157,6 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
     const closeButton = document.querySelector(".close-btn");
     const menuButton = document.querySelector(".menu-btn");
 
-    const setOptionValue = (elementId, value) => {
-      document.getElementById(elementId).value = value;
-    };
-
-    setOptionValue("year", "<?php echo htmlspecialchars($yearInput); ?>");
-    setOptionValue("nationality", "<?php echo htmlspecialchars($nationalityInput); ?>");
-
     menuButton.addEventListener("click", openSidebar);
     closeButton.addEventListener("click", closeSidebar);
     window.addEventListener("click", function(event) {
@@ -186,6 +179,14 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
       dashboard.style.marginTop = "40px";
     }
 
+    
+    const setOptionValue = (elementId, value) => {
+      document.getElementById(elementId).value = value;
+    };
+
+    setOptionValue("year", "<?php echo htmlspecialchars($yearInput); ?>");
+    setOptionValue("nationality", "<?php echo htmlspecialchars($nationalityInput); ?>");
+    
     // bar chart left
     const ctx = document.getElementById("bar-chart").getContext("2d");
     const data = <?php echo json_encode($totalImmigrants) ?>;

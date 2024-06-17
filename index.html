@@ -1,67 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Stacked Bar Chart</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, 
+				initial-scale=1.0">
+	<script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js">
+	</script>
+	<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.1.2/chart.umd.js">
+	</script>
+	<title>
+		GeeksforGeeks Bubble Chart - Example 1
+	</title>
 </head>
+
 <body>
-    <canvas id="myChart" width="400" height="200"></canvas>
+	<div>
+		<h2 style="color:green">
+			GeeksforGeeks
+		</h2>
+		<h5>Chart JS Bubble Chart 1</h5>
+		<div>
+			<canvas id="bubbleChart1"
+					width="700"
+					height="300">
+			</canvas>
+		</div>
+	</div>
+	<script>
+		const data = {
+			datasets: [{
+				data: [
+					{ x: 50, y: 100, r: 25 },
+					{ x: 30, y: 50, r: 15 },
+					{ x: 80, y: 120, r: 30 },
+				],
+				backgroundColor: 'rgba(255, 99, 132, 0.6)',
+				borderColor: 'rgba(255, 99, 132, 1)',
+				borderWidth: 2,
+				label: 'GeeksforGeeks Data',
+				hoverBackgroundColor: 'rgba(255, 99, 132, 0.8)',
+				hoverBorderColor: 'rgba(255, 99, 132, 1)',
+				hoverBorderWidth: 3,
+			}],
+		};
+		const config = {
+			type: 'bubble',
+			data: data,
+			options: {
+				scales: {
+					x: { title: { display: true, 
+								text: 'Number of Articles' } },
+					y: { title: { display: true, 
+								text: 'Number of Courses' } },
+				},
+				plugins: {
+					legend: { display: true, position: 'top' },
+					tooltip: { intersect: true },
+				},
+			},
+		};
+		const myBubbleChart = 
+			new Chart(document.getElementById('bubbleChart1'), config);
+	</script>
 </body>
-<style>
-    body {
-        background-color: rgb(255, 252, 246);
-    }
-</style>
+
 </html>
-<script>
-    const ctx = document.getElementById('myChart').getContext('2d');
-const data = {
-    labels: ['District 1', 'District 2', 'District 3'],
-    datasets: [
-        {
-            label: 'Country A',
-            data: [120, 150, 100],
-            backgroundColor: 'rgba(255, 99, 132, 0.5)'
-        },
-        {
-            label: 'Country B',
-            data: [90, 130, 80],
-            backgroundColor: 'rgba(54, 162, 235, 0.5)'
-        },
-        {
-            label: 'Country C',
-            data: [60, 80, 70],
-            backgroundColor: 'rgba(75, 192, 192, 0.5)'
-        }
-    ]
-};
-
-const options = {
-    plugins: {
-        title: {
-            display: true,
-            text: 'Distribution of Immigrants by District and Country of Origin'
-        },
-        tooltip: {
-            mode: 'index',
-            intersect: false
-        }
-    },
-    responsive: true,
-    scales: {
-        x: {
-            stacked: true
-        },
-        y: {
-            stacked: true
-        }
-    }
-};
-
-const myChart = new Chart(ctx, {
-    type: 'bar',
-    data: data,
-    options: options
-});
-
-</script>
