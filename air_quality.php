@@ -6,8 +6,7 @@ $client = new MongoDB\Client();
 $collection = $client->barcelona->air_qualities;
 $districtNames = $collection->distinct('district_name');
 
-$filter; $o3Counts; $no2Counts; $pm10Counts = [];
-
+// filter by district
 $districtFilter = isset($_POST["district"]) ? $_POST["district"] : "All";
 if ($districtFilter == "All") {
   $documents = $collection->find()->toArray();
@@ -16,34 +15,71 @@ if ($districtFilter == "All") {
   $documents = $collection->find($filter)->toArray();
 }
 
-// get values 
-$o3Values = array_column($documents, 'o3_value');
-$no2Values = array_column($documents, 'no2_value');
-$pm10Values = array_column($documents, 'pm10_value');
-
-$o3Hours = array_column($documents, 'o3_hour');
-$no2Hours = array_column($documents, 'no2_hour');
-$pm10Hours = array_column($documents, 'pm10_hour');
-
 // convert hours to int (before: ..h)
-$o3Hours = array_map(function($hour) {
-  return intval(str_replace('h', '', $hour));
-}, $o3Hours);
-$no2Hours = array_map(function($hour) {
-  return intval(str_replace('h', '', $hour));
-}, $no2Hours);
-$pm10Hours = array_map(function($hour) {
-  return intval(str_replace('h', '', $hour));
-}, $pm10Hours);
+$o3Data = [];
+$no2Data = [];
+$pm10Data = [];
 
-// print_r($o3Values);
-// print_r($o3Hours);
+foreach ($documents as $document) {
+  if (!empty($document['o3_hour'])) {
+    $o3Data[] = [
+      'hour' => (int) str_replace('h', '', $document['o3_hour']),
+      'value' => $document['o3_value']
+    ];
+  }
+  if (!empty($document['no2_hour'])) {
+    $no2Data[] = [
+      'hour' => (int) str_replace('h', '', $document['no2_hour']),
+      'value' => $document['no2_value']
+    ];
+  }
+  if (!empty($document['pm10_hour'])) {
+    $pm10Data[] = [
+      'hour' => (int) str_replace('h', '', $document['pm10_hour']),
+      'value' => $document['pm10_value']
+    ];
+  }
+}
 ?>
+
+<style>
+  .air-quality-container {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .district-filter {
+    border-radius: 6px;
+    border: 1px solid #a9a9a9;
+    width: 120px;
+    height: 28px;
+    margin-bottom: 10px;
+  }
+
+  .wider {
+    width: 200px;
+  }
+
+  .air-quality-filter-form {
+    display: flex;
+    gap: 8px;
+  }
+
+  .chart-container-1 {
+    width: 1200px !important;
+    height: 600px !important;
+  }
+
+</style>
 
 <body>
   <div class="grid-container">
     <!-- Sidebar -->
-    <!-- <div class="sidebar-container">
+    <div class="sidebar-container">
       <div class="sidebar-title">
         <div class="text-end close-btn">
           <i class="bx bx-x"></i>
@@ -71,12 +107,12 @@ $pm10Hours = array_map(function($hour) {
         </li>
         <li class="nav-item">
           <a href="air_quality.php" class="nav-link active">
-            Air Quality by Neighborhood
+            Air Quality Dashboard
           </a>
         </li>
       </ul>
       <hr>
-    </div> -->
+    </div>
     <div class="menu-btn">
       <i class="bx bx-menu"></i>
     </div>
@@ -84,120 +120,150 @@ $pm10Hours = array_map(function($hour) {
     <!-- Dashboard -->
     <div class="air-quality-dashboard">
       <h2 class="text-center">Air Quality Dashboard</h2><br>
-      <form method="post" class="air-quality-filter-form" id="districtForm">
-        <h5>Filter by district</h5>
-        <select name="district" id="district" class="district-filter wider" onchange="document.getElementById('districtForm').submit()">
-          <option value="All">All</option>
-          <?php foreach ($districtNames as $district) { ?>
-            <option value="<?php echo htmlspecialchars($district); ?>" <?php echo ($district == $districtFilter) ? 'selected' : ''; ?>><?php echo htmlspecialchars($district); ?></option>
-          <?php } ?>
-        </select>
-      </form>
-
-      <div class="chart-container-1">
-        <canvas id="scatterPlotChart" width="1200" height="600"></canvas>
+      <div class="air-quality-container">
+        <form method="post" class="air-quality-filter-form" id="districtForm">
+          <h5>Filter by district</h5>
+          <select name="district" id="district" class="district-filter wider" onchange="document.getElementById('districtForm').submit()">
+            <option value="All">All</option>
+            <?php foreach ($districtNames as $district) { ?>
+              <option value="<?php echo htmlspecialchars($district); ?>" <?php echo ($district == $districtFilter) ? 'selected' : ''; ?>><?php echo htmlspecialchars($district); ?></option>
+            <?php } ?>
+          </select>
+        </form>
+        <div class="chart-container-1">
+          <canvas id="bubbleChart"></canvas>
+        </div>
       </div>
     </div>
 </body>
 
 <script>
   // sidebar
-  // const sidebarContainer = document.querySelector(".sidebar-container");
-  // const gridContainer = document.querySelector(".grid-container");
-  // const dashboard = document.querySelector(".immigrant-dashboard");
-  // const closeButton = document.querySelector(".close-btn");
-  // const menuButton = document.querySelector(".menu-btn");
+  const sidebarContainer = document.querySelector(".sidebar-container");
+  const gridContainer = document.querySelector(".grid-container");
+  const dashboard = document.querySelector(".immigrant-dashboard");
+  const closeButton = document.querySelector(".close-btn");
+  const menuButton = document.querySelector(".menu-btn");
 
-  // menuButton.addEventListener("click", openSidebar);
-  // closeButton.addEventListener("click", closeSidebar);
-  // window.addEventListener("click", function(event) {
-  //   if (!menuButton.contains(event.target) && !sidebarContainer.contains(event.target)) {
-  //     closeSidebar();
-  //   }
-  // });
+  menuButton.addEventListener("click", openSidebar);
+  closeButton.addEventListener("click", closeSidebar);
+  window.addEventListener("click", function(event) {
+    if (!menuButton.contains(event.target) && !sidebarContainer.contains(event.target)) {
+      closeSidebar();
+    }
+  });
 
-  // function closeSidebar() {
-  //   sidebarContainer.style.display = "none";
-  //   menuButton.style.display = "block";
-  //   gridContainer.style.gridTemplateColumns = "auto";
-  //   dashboard.style.marginTop = "0px";
-  // }
+  function closeSidebar() {
+    sidebarContainer.style.display = "none";
+    menuButton.style.display = "block";
+    gridContainer.style.gridTemplateColumns = "auto";
+    dashboard.style.marginTop = "0px";
+  }
 
-  // function openSidebar() {
-  //   sidebarContainer.style.display = "block";
-  //   menuButton.style.display = "none";
-  //   gridContainer.style.gridTemplateColumns = "1fr 3fr";
-  //   dashboard.style.marginTop = "40px";
-  // }
+  function openSidebar() {
+    sidebarContainer.style.display = "block";
+    menuButton.style.display = "none";
+    gridContainer.style.gridTemplateColumns = "1fr 3fr";
+    dashboard.style.marginTop = "40px";
+  }
 
-  // closeSidebar();
 
-  const ctx = document.getElementById('scatterPlotChart').getContext('2d');
-  const dataO3 = <?php echo json_encode($o3Values); ?>;
-  const dataNO2 = <?php echo json_encode($no2Values); ?>;
-  const dataPM10 = <?php echo json_encode($pm10Values); ?>;
+  // bubble chart
+  const ctx = document.getElementById('bubbleChart').getContext('2d');
 
-  const dataO3Hours = <?php echo json_encode($o3Hours); ?>;
-  const dataNO2Hours = <?php echo json_encode($no2Hours); ?>;
-  const dataPM10Hours = <?php echo json_encode($pm10Hours); ?>;
+  const o3Data = <?php echo json_encode($o3Data); ?>;
+  const no2Data = <?php echo json_encode($no2Data); ?>;
+  const pm10Data = <?php echo json_encode($pm10Data); ?>;
 
-  const data = {
-    datasets: [{
-        label: 'O3',
-        data: dataO3.map((value, index) => ({x: dataO3Hours[index], y: value})),
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1,
-        pointRadius: 5
-      },
-      {
-        label: 'NO2',
-        data: dataNO2.map((value, index) => ({x: dataNO2Hours[index], y: value})),
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1,
-        pointRadius: 5
-      },
-      {
-        label: 'PM10',
-        data: dataPM10.map((value, index) => ({x: dataPM10Hours[index], y: value})),
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-        pointRadius: 5
+  // aggregate data by hour & count of hour
+  function aggregateData(data) {
+    const aggregatedData = [];
+    const counts = {};
+
+    data.forEach((element) => {
+      const hour = element.hour;
+      if (!counts[hour]) {
+        counts[hour] = {
+          count: 0,
+          sum: 0
+        };
       }
-    ]
-  };
+      counts[hour].count++;
+      counts[hour].sum += element.value;
+    });
 
-  const config = {
-    type: 'scatter',
-    data: data,
+    for (const hour in counts) {
+      if (counts.hasOwnProperty(hour)) {
+        const averageValue = counts[hour].sum / counts[hour].count;
+        aggregatedData.push({
+          x: parseInt(hour),
+          y: averageValue,
+          r: counts[hour].count * 0.1 // to make the radius smaller
+        });
+      }
+    }
+
+    return aggregatedData;
+  }
+
+  // aggregate data for each indicators
+  const aggregatedO3Data = aggregateData(o3Data);
+  const aggregatedNO2Data = aggregateData(no2Data);
+  const aggregatedPM10Data = aggregateData(pm10Data);
+
+  const scatterPlotChart = new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: [{
+          label: 'O3',
+          data: aggregatedO3Data,
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'NO2',
+          data: aggregatedNO2Data,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'PM10',
+          data: aggregatedPM10Data,
+          backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }
+      ]
+    },
     options: {
       responsive: true,
       plugins: {
         tooltip: {
           mode: 'index',
-          intersect: false,
+          intersect: false
         }
       },
       scales: {
         x: {
-          beginAtZero: true,
+          type: 'linear',
+          position: 'bottom',
           title: {
             display: true,
-            text: 'Time (hours)'
+            text: 'Time (hour)'
           }
         },
         y: {
-          beginAtZero: true,
           title: {
             display: true,
-            text: 'Concentration (µg/m³)'
-          }
+            text: 'Average Value'
+          },
+          beginAtZero: true
         }
       }
     }
-  };
+  });
 
-  const scatterPlotChart = new Chart(ctx, config);
+  closeSidebar();
 </script>
