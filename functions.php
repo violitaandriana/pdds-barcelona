@@ -8,13 +8,11 @@ if (!$conn) {
 
 function query($query)
 {
-    // biar bisa ambil $conn di luar function
     global $conn;
     $result = mysqli_query($conn, $query);
     $rows = [];
 
     while ($row = mysqli_fetch_assoc($result)) {
-        // append row ke dalam array rows
         $rows[] = $row;
     }
     return $rows;
@@ -74,30 +72,4 @@ function getTotalImmigrant($year)
     $data = query($query);
 
     return $data[0]['total_immigrant'];
-}
-
-function determineQuality($value, $indicator)
-{
-    if ($indicator == 'O3') {
-        if ($value >= 0 && $value <= 54) return 'Good';
-        if ($value >= 55 && $value <= 70) return 'Moderate';
-        if ($value >= 71 && $value <= 85) return 'Unhealthy for Sensitive Groups';
-        if ($value >= 86 && $value <= 105) return 'Unhealthy';
-        if ($value >= 106 && $value <= 200) return 'Very Unhealthy';
-        return 'Hazardous';
-    } elseif ($indicator == 'NO2') {
-        if ($value >= 0 && $value <= 53) return 'Good';
-        if ($value >= 54 && $value <= 100) return 'Moderate';
-        if ($value >= 101 && $value <= 360) return 'Unhealthy for Sensitive Groups';
-        if ($value >= 361 && $value <= 649) return 'Unhealthy';
-        if ($value >= 650 && $value <= 1249) return 'Very Unhealthy';
-        return 'Hazardous';
-    } elseif ($indicator == 'PM10') {
-        if ($value >= 0 && $value <= 54) return 'Good';
-        if ($value >= 55 && $value <= 154) return 'Moderate';
-        if ($value >= 155 && $value <= 254) return 'Unhealthy for Sensitive Groups';
-        if ($value >= 255 && $value <= 354) return 'Unhealthy';
-        if ($value >= 355 && $value <= 424) return 'Very Unhealthy';
-        return 'Hazardous';
-    }
 }

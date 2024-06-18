@@ -19,6 +19,7 @@ if ($districtFilter == "All") {
 $o3Data = [];
 $no2Data = [];
 $pm10Data = [];
+
 $o3QualityCounts = [];
 $no2QualityCounts = [];
 $pm10QualityCounts = [];
@@ -67,7 +68,7 @@ foreach ($documents as $document) {
   body {
     background-color: rgb(255, 252, 246);
   }
-  
+
   .sidebar-container {
     height: auto !important;
   }
@@ -76,9 +77,15 @@ foreach ($documents as $document) {
     margin: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: center !important;
+    justify-content: center !important;
     gap: 30px;
+  }
+
+  .chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .district-filter {
@@ -104,11 +111,10 @@ foreach ($documents as $document) {
   }
 
   .chart-container-2 {
-    width: 1200px !important;
+    width: 1000px !important;
     height: 400px !important;
     margin-top: 30px;
   }
-
 </style>
 
 <body>
@@ -165,11 +171,17 @@ foreach ($documents as $document) {
             <?php } ?>
           </select>
         </form>
-        <div class="chart-container-1">
-          <canvas id="bubbleChart"></canvas>
+        <div class="chart">
+          <h4>Average Value of Indicators</h4>
+          <div class="chart-container-1">
+            <canvas id="bubbleChart"></canvas>
+          </div>
         </div>
-        <div class="chart-container-2">
-          <canvas id="barChart"></canvas>
+        <div class="chart">
+          <h4>Air Quality of Indicators</h4>
+          <div class="chart-container-2">
+            <canvas id="barChart"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -295,7 +307,7 @@ foreach ($documents as $document) {
         y: {
           title: {
             display: true,
-            text: 'Average Value'
+            text: 'Average Value (µg/m³)'
           },
           beginAtZero: true
         }
@@ -314,8 +326,7 @@ foreach ($documents as $document) {
     type: 'bar',
     data: {
       labels: ['Good', 'Moderate', 'Unhealthy'],
-      datasets: [
-        {
+      datasets: [{
           label: 'O3',
           data: [o3QualityCounts['Good'] || 0, o3QualityCounts['Moderate'] || 0, o3QualityCounts['Unhealthy'] || 0],
           backgroundColor: 'rgba(255, 99, 132, 0.5)',

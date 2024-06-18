@@ -116,4 +116,4 @@ foreach ($documents as $document) {
 }
 
 echo "Air quality data has been updated with classifications.";
-?>
+
