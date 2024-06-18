@@ -19,6 +19,9 @@ if ($districtFilter == "All") {
 $o3Data = [];
 $no2Data = [];
 $pm10Data = [];
+$o3QualityCounts = [];
+$no2QualityCounts = [];
+$pm10QualityCounts = [];
 
 foreach ($documents as $document) {
   if (!empty($document['o3_hour'])) {
@@ -26,18 +29,36 @@ foreach ($documents as $document) {
       'hour' => (int) str_replace('h', '', $document['o3_hour']),
       'value' => $document['o3_value']
     ];
+    if (!empty($document['o3_quality'])) {
+      if (!isset($o3QualityCounts[$document['o3_quality']])) {
+        $o3QualityCounts[$document['o3_quality']] = 0;
+      }
+      $o3QualityCounts[$document['o3_quality']]++;
+    }
   }
   if (!empty($document['no2_hour'])) {
     $no2Data[] = [
       'hour' => (int) str_replace('h', '', $document['no2_hour']),
       'value' => $document['no2_value']
     ];
+    if (!empty($document['no2_quality'])) {
+      if (!isset($no2QualityCounts[$document['no2_quality']])) {
+        $no2QualityCounts[$document['no2_quality']] = 0;
+      }
+      $no2QualityCounts[$document['no2_quality']]++;
+    }
   }
   if (!empty($document['pm10_hour'])) {
     $pm10Data[] = [
       'hour' => (int) str_replace('h', '', $document['pm10_hour']),
       'value' => $document['pm10_value']
     ];
+    if (!empty($document['pm10_quality'])) {
+      if (!isset($pm10QualityCounts[$document['pm10_quality']])) {
+        $pm10QualityCounts[$document['pm10_quality']] = 0;
+      }
+      $pm10QualityCounts[$document['pm10_quality']]++;
+    }
   }
 }
 ?>
@@ -80,6 +101,12 @@ foreach ($documents as $document) {
   .chart-container-1 {
     width: 1200px !important;
     height: 600px !important;
+  }
+
+  .chart-container-2 {
+    width: 1200px !important;
+    height: 400px !important;
+    margin-top: 30px;
   }
 
 </style>
@@ -140,6 +167,9 @@ foreach ($documents as $document) {
         </form>
         <div class="chart-container-1">
           <canvas id="bubbleChart"></canvas>
+        </div>
+        <div class="chart-container-2">
+          <canvas id="barChart"></canvas>
         </div>
       </div>
     </div>
@@ -266,6 +296,67 @@ foreach ($documents as $document) {
           title: {
             display: true,
             text: 'Average Value'
+          },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // bar chart
+  const barCtx = document.getElementById('barChart').getContext('2d');
+
+  const o3QualityCounts = <?php echo json_encode($o3QualityCounts); ?>;
+  const no2QualityCounts = <?php echo json_encode($no2QualityCounts); ?>;
+  const pm10QualityCounts = <?php echo json_encode($pm10QualityCounts); ?>;
+
+  const barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Good', 'Moderate', 'Unhealthy'],
+      datasets: [
+        {
+          label: 'O3',
+          data: [o3QualityCounts['Good'] || 0, o3QualityCounts['Moderate'] || 0, o3QualityCounts['Unhealthy'] || 0],
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'NO2',
+          data: [no2QualityCounts['Good'] || 0, no2QualityCounts['Moderate'] || 0, no2QualityCounts['Unhealthy'] || 0],
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'PM10',
+          data: [pm10QualityCounts['Good'] || 0, pm10QualityCounts['Moderate'] || 0, pm10QualityCounts['Unhealthy'] || 0],
+          backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Air Quality Category'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Count'
           },
           beginAtZero: true
         }
