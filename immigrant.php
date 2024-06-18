@@ -7,8 +7,7 @@ $yearInput = isset($_POST["year"]) ? $_POST["year"] : "All";
 
 $topTenCountries = getTopCountries($yearInput);
 $countries = array_column($topTenCountries, 'nationality');
-$totalImmigrants = array_column($topTenCountries, 'total_immigrants');
-
+$totalImmigrant = array_column($topTenCountries, 'total_immigrant');
 
 // district & nationality
 $nationalityInput = isset($_POST["nationality"]) ? $_POST["nationality"] : "All";
@@ -18,7 +17,11 @@ $nationalities = array_column($nationalitiesArr, 'nationality');
 
 $districtTotalArr = getDistrictTotalByNationality($nationalityInput);
 $districtNames = array_column($districtTotalArr, 'district_name');
-$totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
+$totalImmigrant2 = array_column($districtTotalArr, 'total_immigrant');
+
+// card
+$totalImmigrantByYear = getTotalImmigrant($yearInput);
+$totalDistrict = getTotalDistrict();
 ?>
 
 <style>
@@ -29,13 +32,30 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
   .sidebar-container {
     height: auto !important;
   }
-  
+
   .immigrant-container {
     margin: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 30px;
+  }
+
+  .immigrant-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 260px;
+    background-color: rgba(255, 205, 86, 0.2);
   }
 
   .immigrant-filter {
@@ -55,7 +75,8 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
     gap: 8px;
   }
 
-  .chart-container-1, .chart-container-2 {
+  .chart-container-1,
+  .chart-container-2 {
     width: 550px !important;
     height: 400px !important;
   }
@@ -112,6 +133,16 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
     <!-- Dashboard -->
     <div class="immigrant-dashboard">
       <h2 class="text-center">Immigrant Dashboard</h2><br>
+      <div class="immigrant-cards">
+        <div class="card">
+          <h5>Total Immigrant</h5>
+          <?php echo htmlspecialchars(number_format($totalImmigrantByYear)); ?>
+        </div>
+        <div class="card">
+          <h5>Total District</h5>
+          <?php echo htmlspecialchars($totalDistrict); ?>
+        </div>
+      </div>
       <div class="immigrant-container">
         <!-- Nationality -->
         <div class="immigrant-left">
@@ -182,17 +213,17 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
       dashboard.style.marginTop = "40px";
     }
 
-    
+
     const setOptionValue = (elementId, value) => {
       document.getElementById(elementId).value = value;
     };
 
     setOptionValue("year", "<?php echo htmlspecialchars($yearInput); ?>");
     setOptionValue("nationality", "<?php echo htmlspecialchars($nationalityInput); ?>");
-    
+
     // bar chart left
     const ctx = document.getElementById("bar-chart").getContext("2d");
-    const data = <?php echo json_encode($totalImmigrants) ?>;
+    const data = <?php echo json_encode($totalImmigrant) ?>;
     const labels = <?php echo json_encode($countries) ?>;
     const myChart = new Chart(ctx, {
       type: "bar",
@@ -202,28 +233,12 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
           label: "Total Immigrant by Nationality",
           data: data,
           backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
             "rgba(255, 159, 64, 0.2)",
             "rgba(255, 205, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(185, 198, 232, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 159, 64, 0.2)",
           ],
           borderColor: [
-            "rgb(255, 99, 132)",
             "rgb(255, 159, 64)",
             "rgb(255, 205, 86)",
-            "rgb(75, 192, 192)",
-            "rgb(54, 162, 235)",
-            "rgb(153, 102, 255)",
-            "rgb(54, 162, 235)",
-            "rgb(75, 192, 192)",
-            "rgb(255, 205, 86)",
-            "rgb(255, 159, 64)",
           ],
           borderWidth: 1
         }]
@@ -243,7 +258,7 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
 
     // radar chart right
     const ctx2 = document.getElementById("bar-chart-2").getContext("2d");
-    const data2 = <?php echo json_encode($totalImmigrants2) ?>;
+    const data2 = <?php echo json_encode($totalImmigrant2) ?>;
     const labels2 = <?php echo json_encode($districtNames) ?>;
     const myChart2 = new Chart(ctx2, {
       type: "radar",
@@ -253,10 +268,10 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
           label: "Total Immigrant in District",
           data: data2,
           backgroundColor: [
-            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
           ],
           borderColor: [
-            "rgb(54, 162, 235)",
+            "rgb(255, 159, 64)",
           ],
           borderWidth: 1
         }]

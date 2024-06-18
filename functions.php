@@ -23,11 +23,12 @@ function query($query)
 function getTopCountries($selectedYear)
 {
     if ($selectedYear == "All" || $selectedYear == "") {
-        $query = "SELECT nationality, SUM(total) AS total_immigrants FROM immigrant GROUP BY nationality ORDER BY total_immigrants DESC LIMIT 10";
+        $query = "SELECT nationality, SUM(total) AS total_immigrant FROM immigrant GROUP BY nationality ORDER BY total_immigrant DESC LIMIT 10";
     } else {
         $selectedYear = intval($selectedYear);
-        $query = "SELECT nationality, SUM(total) AS total_immigrants FROM immigrant WHERE year = $selectedYear GROUP BY nationality ORDER BY total_immigrants DESC LIMIT 10";
+        $query = "SELECT nationality, SUM(total) AS total_immigrant FROM immigrant WHERE year = $selectedYear GROUP BY nationality ORDER BY total_immigrant DESC LIMIT 10";
     }
+
     $data = query($query);
 
     return $data;
@@ -40,22 +41,43 @@ function getNationality()
 
     return $data;
 }
+function getTotalDistrict()
+{
+    $query = "SELECT COUNT(DISTINCT(district_name)) AS total_district FROM immigrant";
+    $data = query($query);
+
+    return $data[0]['total_district'];
+}
 
 function getDistrictTotalByNationality($nationality)
 {
     if ($nationality == "All" || $nationality == "") {
-        $query = "SELECT district_name, SUM(total) AS total_immigrants FROM immigrant GROUP BY district_name";
-    }
-    else {
+        $query = "SELECT district_name, SUM(total) AS total_immigrant FROM immigrant GROUP BY district_name";
+    } else {
         $nationality = strval($nationality);
-        $query = "SELECT district_name, SUM(total) AS total_immigrants FROM immigrant WHERE nationality = '$nationality' GROUP BY district_name";
+        $query = "SELECT district_name, SUM(total) AS total_immigrant FROM immigrant WHERE nationality = '$nationality' GROUP BY district_name";
     }
+
     $data = query($query);
 
     return $data;
 }
 
-function determineQuality($value, $indicator) {
+function getTotalImmigrant($year)
+{
+    if ($year == "All" || $year == "") {
+        $query = "SELECT SUM(total) as total_immigrant FROM immigrant";
+    } else {
+        $query = "SELECT SUM(total) as total_immigrant FROM immigrant WHERE year = $year";
+    }
+
+    $data = query($query);
+
+    return $data[0]['total_immigrant'];
+}
+
+function determineQuality($value, $indicator)
+{
     if ($indicator == 'O3') {
         if ($value >= 0 && $value <= 54) return 'Good';
         if ($value >= 55 && $value <= 70) return 'Moderate';

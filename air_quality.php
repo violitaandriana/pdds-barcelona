@@ -15,7 +15,7 @@ if ($districtFilter == "All") {
   $documents = $collection->find($filter)->toArray();
 }
 
-// convert hours to int (before: ..h)
+// convert hours to int (before: ..h) & get the value
 $o3Data = [];
 $no2Data = [];
 $pm10Data = [];
