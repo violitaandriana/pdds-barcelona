@@ -43,6 +43,14 @@ foreach ($documents as $document) {
 ?>
 
 <style>
+  body {
+    background-color: rgb(255, 252, 246);
+  }
+  
+  .sidebar-container {
+    height: auto !important;
+  }
+
   .air-quality-container {
     margin: 20px;
     display: flex;

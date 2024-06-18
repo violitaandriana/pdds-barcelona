@@ -2,6 +2,7 @@
 // MongoDB Connection
 require 'autoload.php'; // Memuat MongoDB PHP Library
 use MongoDB\Client;
+
 $client = new Client("mongodb://localhost:27017");
 $collection = $client->pdds_barcelona->Birth_Rate;
 
@@ -55,6 +56,7 @@ try {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -63,122 +65,72 @@ try {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="stylesheet" href="styles.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
-  <style>
-    .filter-box {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Filter item styles */
-    .filter-item {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .filter-item label {
-      margin-right: 10px;
-      font-weight: bold;
-    }
-
-    .filter-item select {
-      padding: 5px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-      min-width: 150px;
-      margin-right: 20px;
-    }
-
-    .filter-item button {
-      padding: 5px 10px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .filter-item button:hover {
-      background-color: #0056b3;
-    }
-
-    /* Table styles */
-    table#birthTable {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-
-    table#birthTable th, table#birthTable td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-
-    table#birthTable th {
-      background-color: #007bff;
-      color: white;
-    }
-
-    table#birthTable tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-
-    table#birthTable tr:hover {
-      background-color: #ddd;
-    }
-
-    table#birthTable th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    /* Responsive table */
-    @media screen and (max-width: 600px) {
-      table#birthTable thead {
-        display: none;
-      }
-
-      table#birthTable, table#birthTable tbody, table#birthTable tr, table#birthTable td {
-        display: block;
-        width: 100%;
-      }
-
-      table#birthTable tr {
-        margin-bottom: 15px;
-      }
-
-      table#birthTable td {
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-      }
-
-      table#birthTable td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 50%;
-        padding-left: 15px;
-        font-weight: bold;
-        text-align: left;
-      }
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<style>
+  .sidebar-container {
+    height: auto !important;
+  }
+
+  .filter-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Filter item styles */
+  .filter-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-item label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+
+  .filter-item select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    min-width: 150px;
+    margin-right: 20px;
+  }
+
+  .filter-item button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .filter-item button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
 <body>
   <div class="grid-container">
     <!-- Sidebar -->
@@ -212,7 +164,7 @@ try {
     <div class="birth-content">
       <h1>Birth Rate Pattern</h1>
       <p>
-        Birth Rate Pattern memberikan visualisasi untuk mengetahui pola kelahiran (melihat apakah ada peningkatan / 
+        Birth Rate Pattern memberikan visualisasi untuk mengetahui pola kelahiran (melihat apakah ada peningkatan /
         penurunan) pada distrik tertentu. Filter berdasarkan tahun mulai hingga tahun selesai dan gender.
       </p>
       <div class="birth-filter">
@@ -357,10 +309,8 @@ try {
       config
     );
 
-    // Inisialisasi DataTables
-    $(document).ready(function() {
-      $('#birthTable').DataTable();
-    });
+    closeSidebar();
   </script>
 </body>
+
 </html>

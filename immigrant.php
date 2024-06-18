@@ -23,10 +23,13 @@ $totalImmigrants2 = array_column($districtTotalArr, 'total_immigrants');
 
 <style>
   body {
-    overflow: hidden;
     background-color: rgb(255, 252, 246);
   }
 
+  .sidebar-container {
+    height: auto !important;
+  }
+  
   .immigrant-container {
     margin: 20px;
     display: flex;
