@@ -7,6 +7,7 @@ $collection = $client->pdds_barcelona->Birth_Rate;
 
 // Ambil data dari MongoDB dan persiapkan untuk Chart.js
 $dataPoints = [];
+$tableData = []; // Data untuk tabel
 
 $startYear = isset($_GET['start_year']) ? (int)$_GET['start_year'] : null;
 $endYear = isset($_GET['end_year']) ? (int)$_GET['end_year'] : null;
@@ -25,6 +26,8 @@ try {
   foreach ($cursor as $document) {
     $year = $document['Year'];
     $districtName = $document['District Name'];
+    $neighborhoodCode = $document['Neighborhood Code'];
+    $neighborhoodName = $document['Neighborhood Name'];
     $gender = $document['Gender'];
     $number = $document['Number'];
 
@@ -33,11 +36,23 @@ try {
       $dataPoints[$districtName][$year] = 0;
     }
     $dataPoints[$districtName][$year] += $number;
+
+    // Masukkan data ke dalam tableData untuk tabel
+    $tableData[] = [
+      'Year' => $year,
+      'District Code' => $districtName,
+      'District Name' => $districtName,
+      'Neighborhood Code' => $neighborhoodCode,
+      'Neighborhood Name' => $neighborhoodName,
+      'Gender' => $gender,
+      'Number' => $number
+    ];
   }
 } catch (Exception $e) {
   echo "<script>alert('Error retrieving data: " . $e->getMessage() . "');</script>";
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,9 +65,10 @@ try {
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<style>
-  .filter-box {
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+  <style>
+    .filter-box {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -95,7 +111,74 @@ try {
     .filter-item button:hover {
       background-color: #0056b3;
     }
-</style>
+
+    /* Table styles */
+    table#birthTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table#birthTable th, table#birthTable td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    table#birthTable th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    table#birthTable tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    table#birthTable tr:hover {
+      background-color: #ddd;
+    }
+
+    table#birthTable th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    /* Responsive table */
+    @media screen and (max-width: 600px) {
+      table#birthTable thead {
+        display: none;
+      }
+
+      table#birthTable, table#birthTable tbody, table#birthTable tr, table#birthTable td {
+        display: block;
+        width: 100%;
+      }
+
+      table#birthTable tr {
+        margin-bottom: 15px;
+      }
+
+      table#birthTable td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+      }
+
+      table#birthTable td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
 <body>
   <div class="grid-container">
     <!-- Sidebar -->
@@ -167,6 +250,38 @@ try {
       </div>
       <!-- Tambahkan canvas untuk chart -->
       <canvas id="myChart"></canvas>
+
+      <!-- Tabel data -->
+      <div class="table-responsive">
+        <table id="birthTable" class="display">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>District Code</th>
+              <th>District Name</th>
+              <th>Neighborhood Code</th>
+              <th>Neighborhood Name</th>
+              <th>Gender</th>
+              <th>Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            foreach ($tableData as $row) {
+              echo '<tr>';
+              echo '<td>' . htmlspecialchars($row['Year']) . '</td>';
+              echo '<td>' . htmlspecialchars($row['District Code']) . '</td>';
+              echo '<td>' . htmlspecialchars($row['District Name']) . '</td>';
+              echo '<td>' . htmlspecialchars($row['Neighborhood Code']) . '</td>';
+              echo '<td>' . htmlspecialchars($row['Neighborhood Name']) . '</td>';
+              echo '<td>' . htmlspecialchars($row['Gender']) . '</td>';
+              echo '<td>' . htmlspecialchars($row['Number']) . '</td>';
+              echo '</tr>';
+            }
+            ?>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -241,6 +356,11 @@ try {
       document.getElementById('myChart'),
       config
     );
+
+    // Inisialisasi DataTables
+    $(document).ready(function() {
+      $('#birthTable').DataTable();
+    });
   </script>
 </body>
 </html>
