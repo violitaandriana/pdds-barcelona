@@ -22,11 +22,13 @@ $totalImmigrant2 = array_column($districtTotalArr, 'total_immigrant');
 // card
 $totalImmigrantByYear = getTotalImmigrant($yearInput);
 $totalDistrict = getTotalDistrict();
+$totalNationality = count($nationalities);
 ?>
 
 <style>
   body {
     background-color: rgb(255, 252, 246);
+    margin-bottom: 40px;
   }
 
   .sidebar-container {
@@ -137,6 +139,10 @@ $totalDistrict = getTotalDistrict();
         <div class="card">
           <h5>Total Immigrant</h5>
           <?php echo htmlspecialchars(number_format($totalImmigrantByYear)); ?>
+        </div>
+        <div class="card">
+          <h5>Total Nationality</h5>
+          <?php echo htmlspecialchars(number_format($totalNationality)); ?>
         </div>
         <div class="card">
           <h5>Total District</h5>
