@@ -106,49 +106,35 @@ while ($row = $chartResult->fetch_assoc()) {
 $conn->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    .container-chart {
+        width: 100% !important;
+        margin: 0 auto;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accident Report 2017</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    .chart-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
-    <style>
-        .container-chart {
-            width: 100% !important;
-            margin: 0 auto;
-        }
+    .chart-container .col-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
 
-        .chart-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
+    .card-total {
+        width: 100%;
+        max-width: 300px;
+    }
 
-        .chart-container .col-right {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .card-total {
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .pie-chart-container {
-            width: 100%;
-            max-width: 300px;
-        }
-    </style>
+    .pie-chart-container {
+        width: 100%;
+        max-width: 300px;
+    }
+</style>
 </head>
 
 <body>
@@ -362,5 +348,3 @@ $conn->close();
         </script>
     </div>
 </body>
-
-</html>
