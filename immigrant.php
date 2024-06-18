@@ -28,6 +28,9 @@ $totalNationality = count($nationalities);
 <style>
   body {
     background-color: rgb(255, 252, 246);
+  }
+
+  .immigrant-dashboard {
     margin-bottom: 40px;
   }
 

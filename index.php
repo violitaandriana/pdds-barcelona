@@ -107,6 +107,10 @@ $conn->close();
 ?>
 
 <style>
+    .sidebar-container {
+        height: 100vh;
+    }
+
     .container-chart {
         width: 100% !important;
         margin: 0 auto;
