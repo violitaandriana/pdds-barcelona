@@ -82,12 +82,6 @@ foreach ($documents as $document) {
     gap: 30px;
   }
 
-  .chart {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
   .district-filter {
     border-radius: 6px;
     border: 1px solid #a9a9a9;
@@ -111,9 +105,21 @@ foreach ($documents as $document) {
   }
 
   .chart-container-2 {
-    width: 1000px !important;
+    width: 900px !important;
     height: 400px !important;
     margin-top: 30px;
+  }
+
+  .line {
+    border: 1px solid #dedede;
+    width: 90%;
+  }
+
+  .chart-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20px;
   }
 </style>
 
@@ -171,17 +177,19 @@ foreach ($documents as $document) {
             <?php } ?>
           </select>
         </form>
+        <div class="line"></div>
         <div class="chart">
-          <h4>Average Value of Indicators (O3, NO2, PM10)</h4>
+          <h4 class="text-center">Average Value of Indicators (O3, NO2, PM10)</h4>
           <div class="chart-container-1">
             <canvas id="bubbleChart"></canvas>
           </div>
         </div>
-        <div class="chart">
-          <h4>Quality of Indicators (O3, NO2, PM10)</h4>
-          <div class="chart-container-2">
-            <canvas id="barChart"></canvas>
-          </div>
+        <div class="line"></div>
+        <h4 class="text-center">Quality of Indicators (O3, NO2, PM10)</h4>
+        <div class="chart-2">
+            <div class="chart-container-2">
+              <canvas id="barChart"></canvas>
+            </div>
         </div>
       </div>
     </div>
