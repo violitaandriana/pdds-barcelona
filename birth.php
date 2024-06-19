@@ -1,14 +1,13 @@
 <?php
 include './includes/head.php';
 
-// MongoDB Connection
-require 'autoload.php'; // Load MongoDB PHP Library
-use MongoDB\Client;
+$conn = mysqli_connect("localhost", "root", "", "pdds_barcelona");
 
-$client = new Client("mongodb://localhost:27017");
-$collection = $client->barcelona->births;
+if (!$conn) {
+    die("Connection Failed: " . mysqli_connect_error());
+}
 
-// Fetch data from MongoDB and prepare it for Chart.js
+// Fetch data from MySQL and prepare it for Chart.js
 $dataPoints = [];
 $tableData = []; // Data for the table
 
@@ -16,49 +15,60 @@ $startYear = isset($_GET['start_year']) ? (int)$_GET['start_year'] : null;
 $endYear = isset($_GET['end_year']) ? (int)$_GET['end_year'] : null;
 $genderFilter = isset($_GET['gender']) ? $_GET['gender'] : null;
 
-$filter = [];
+$query = "SELECT * FROM birth";
+$conditions = [];
+
 if ($startYear && $endYear) {
-  $filter['Year'] = ['$gte' => $startYear, '$lte' => $endYear];
+    $conditions[] = "Year BETWEEN $startYear AND $endYear";
 }
 if ($genderFilter) {
-  $filter['Gender'] = $genderFilter;
+    $conditions[] = "Gender = '$genderFilter'";
 }
 
-try {
-  $cursor = $collection->find($filter);
-  foreach ($cursor as $document) {
-    $year = $document['Year'];
-    $districtName = $document['District Name'];
-    $neighborhoodCode = $document['Neighborhood Code'];
-    $neighborhoodName = $document['Neighborhood Name'];
-    $gender = $document['Gender'];
-    $number = $document['Number'];
+if (count($conditions) > 0) {
+    $query .= " WHERE " . implode(" AND ", $conditions);
+}
 
-    // Add data to dataPoints for each district
-    if (!isset($dataPoints[$districtName])) {
-      $dataPoints[$districtName] = 0;
+$result = mysqli_query($conn, $query);
+
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $year = $row['Year'];
+        $districtName = $row['District Name'];
+        $neighborhoodCode = $row['Neighborhood Code'];
+        $neighborhoodName = $row['Neighborhood Name'];
+        $gender = $row['Gender'];
+        $number = $row['Number'];
+
+        // Add data to dataPoints for each district
+        if (!isset($dataPoints[$districtName])) {
+            $dataPoints[$districtName] = 0;
+        }
+        $dataPoints[$districtName] += $number;
+
+        // Add data to tableData for the table
+        $tableData[] = [
+            'Year' => $year,
+            'District Code' => $row['District Code'],
+            'District Name' => $districtName,
+            'Neighborhood Code' => $neighborhoodCode,
+            'Neighborhood Name' => $neighborhoodName,
+            'Gender' => $gender,
+            'Number' => $number
+        ];
     }
-    $dataPoints[$districtName] += $number;
-
-    // Add data to tableData for the table
-    $tableData[] = [
-      'Year' => $year,
-      'District Code' => $districtName,
-      'District Name' => $districtName,
-      'Neighborhood Code' => $neighborhoodCode,
-      'Neighborhood Name' => $neighborhoodName,
-      'Gender' => $gender,
-      'Number' => $number
-    ];
-  }
-} catch (Exception $e) {
-  echo "<script>alert('Error retrieving data: " . $e->getMessage() . "');</script>";
+} else {
+    echo "<script>alert('Error retrieving data: " . mysqli_error($conn) . "');</script>";
 }
+
+mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
   <title>Birth Rate Pattern</title>
+  <!-- Include DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
   <style>
     body {
       background-color: #edf2fa;
@@ -69,26 +79,50 @@ try {
       flex-direction: column;
       align-items: center;
     }
+
     .birth-filter {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
+    
     .chart {
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 80%; /* Adjust width as needed */
+      margin: 0 auto;
     }
 
     .table-responsive {
-    display: flex;
-    justify-content: center;
+      display: flex;
+      justify-content: center;
+      width: 80%; /* Adjust width as needed to match chart width */
+      margin: 0 auto;
     }
-    
+
     #birthTable {
       width: 100%; /* Make the table take the full available width */
-      max-width: 800px; /* Set the maximum width of the table */
+      background-color: #edf2fa; /* Match the background color of the body */
+      border-radius: 10px; /* Optional: to round the corners */
+    }
+
+    #birthTable thead th {
+      background-color: #d1e3f9; /* A slightly darker color for the header */
+      color: #000; /* Text color for the header */
+      border: 1px solid #ddd; /* Border for header cells */
+    }
+
+    #birthTable tbody td {
+      background-color: #edf2fa; /* Match the background color of the body */
+      border: 1px solid #ddd; /* Border for table cells */
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+      background-color: #edf2fa; /* Match the background color of the body */
+      border: 1px solid #ddd; /* Border for the search input */
+      border-radius: 5px; /* Optional: to round the corners */
+      padding: 5px; /* Padding for the search input */
     }
 
     .sidebar-container {
@@ -97,13 +131,15 @@ try {
 
     .filter-box {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       margin-bottom: 20px;
       background: #edf2fa;
       padding: 15px;
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 80%; /* Adjust width as needed */
+      margin: 0 auto;
     }
 
     .filter-item {
@@ -211,7 +247,7 @@ try {
 
       <!-- Data table -->
       <div class="table-responsive">
-        <table class="table table-striped table-bordered" id="birthTable" class="display">
+        <table class="table table-striped table-bordered" id="birthTable">
           <thead>
             <tr>
               <th>Year</th>
@@ -242,7 +278,21 @@ try {
       </div>
     </div>
   </div>
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include DataTables JS -->
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+    $(document).ready( function () {
+        $('#birthTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true
+        });
+    });
+
     const sidebarContainer = document.querySelector(".sidebar-container");
     const gridContainer = document.querySelector(".grid-container");
     const closeButton = document.querySelector(".close-btn");
