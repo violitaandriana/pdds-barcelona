@@ -14,7 +14,7 @@ $selectedNeighborhood = isset($_POST['neighborhood']) ? $_POST['neighborhood'] :
 $searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
 
 // AMBIL DATA DISTRICT NAME
-$districts = array(); //yg nampung hasil district
+$districts = array();
 $districtResult = $conn->query("SELECT DISTINCT district_name FROM accident");
 while ($row = $districtResult->fetch_assoc()) {
     if (strtolower(trim($row['district_name'])) !== 'district name') {
@@ -23,7 +23,7 @@ while ($row = $districtResult->fetch_assoc()) {
 }
 
 // AMBIL DATA NEIGHBORHOOD NAME BERDASAR DISTRICT NAME
-$neighborhood = array(); //yg nampung hasil neighborhood
+$neighborhood = array(); 
 if ($selectedDistrict) {
     $neighborhoodResult = $conn->query("SELECT DISTINCT neighborhood_name FROM accident WHERE district_name = '" . $conn->real_escape_string($selectedDistrict) . "'");
     while ($row = $neighborhoodResult->fetch_assoc()) {
@@ -33,7 +33,6 @@ if ($selectedDistrict) {
 
 // FILTER
 $filteredResults = array();
-
 $whereClauses = array();
 
 if ($selectedDistrict) {
@@ -46,6 +45,7 @@ if ($searchTerm) {
     $whereClauses[] = "(street LIKE '%" . $conn->real_escape_string($searchTerm) . "%' OR part_of_the_day LIKE '%" . $conn->real_escape_string($searchTerm) . "%')";
 }
 
+// DATA
 $query = "SELECT * FROM accident";
 if (count($whereClauses) > 0) {
     $query .= " WHERE " . implode(' AND ', $whereClauses);
@@ -103,6 +103,19 @@ while ($row = $chartResult->fetch_assoc()) {
     }
 }
 
+// TOP 5 KECELAKAAN
+$topDistrictQuery = "SELECT district_name, SUM(victims) AS totalAccidents 
+                     FROM accident 
+                     GROUP BY district_name 
+                     ORDER BY totalAccidents DESC 
+                     LIMIT 5";
+$topDistrictResult = $conn->query($topDistrictQuery);
+$topDistricts = array();
+
+while ($row = $topDistrictResult->fetch_assoc()) {
+    $topDistricts[$row['district_name']] = $row['totalAccidents'];
+}
+
 $conn->close();
 ?>
 
@@ -120,25 +133,33 @@ $conn->close();
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        gap: 10px; /* Mengurangi jarak antar card */
     }
 
     .chart-container .col-right {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
+        gap: 10px; /* Mengurangi jarak antar card */
+        width: 30%; /* Lebar card pie chart dan total korban */
     }
 
-    .card-total {
-        width: 100%;
+    .pie-chart-container,
+    .total-korban-container {
+        width: 100%; /* Menyamakan lebar card pie chart dan total korban */
         max-width: 300px;
     }
 
-    .pie-chart-container {
-        width: 100%;
-        max-width: 300px;
+    .chart-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
     }
 </style>
+
+
 </head>
 
 <body>
@@ -185,7 +206,7 @@ $conn->close();
         <!-- HASIL -->
         <div class="container">
             <h3 class="text-center">ACCIDENT BY LOCATION</h3>
-
+            <!-- FILTER -->
             <form method="post" action="" id="filterForm">
                 <div class="row my-3">
                     <div class="col">
@@ -219,31 +240,38 @@ $conn->close();
             </form>
 
             <div class="chart-container">
-                <!-- BAR CHART -->
-                <div class="col container-chart">
-                    <canvas id="accidentChart" height="230"></canvas>
-                </div>
+    <!-- TOP 5 KECELAKAAN -->
+    <div class="col container-chart chart-card" style="text-align: center;">
+        <p class="card-title">TOP 5 ACCIDENT BY DISTRICT</p><br>
+        <canvas id="topDistrictsChart" height="210"></canvas>
+    </div>
 
-                <!-- CARD DAN PIE CHART -->
-                <div class="col col-right">
-                    <!-- CARD TOTAL KORBAN -->
-                    <div class="card card-total">
-                        <div class="card-body">
-                            <p class="card-title">TOTAL KORBAN</p>
-                            <p class="card-text" style="font-size: 30px;"><?php echo $totalAccidents; ?></p>
-                        </div>
-                    </div>
+    <!-- CARD DAN PIE CHART -->
+    <div class="col col-right">
+        <!-- CARD TOTAL KORBAN -->
+        <div class="card-body chart-card total-korban-container" style="text-align: center;">
+            <p class="card-title">TOTAL KORBAN</p>
+            <p class="card-text" style="font-size: 30px;"><?php echo $totalAccidents; ?></p>
+        </div>
 
-                    <!-- PIE CHART PERBANDINGAN JUMLAH CEDERA RINGAN DAN SERIUS  -->
-                    <div class="pie-chart-container">
-                        <canvas id="injuryChart"></canvas>
-                    </div>
-                </div>
-            </div>
+        <!-- PIE CHART PERBANDINGAN JUMLAH CEDERA RINGAN DAN SERIUS  -->
+        <div class="pie-chart-container chart-card">
+            <canvas id="injuryChart"></canvas>
+        </div>
+    </div>
+
+    <!-- KECELAKAAN BY PART OF THE DAY -->
+    <div class="col container-chart chart-card" style="text-align: center;">
+        <p class="card-title">ACCIDENT BY PART OF THE DAY</p><br>
+        <canvas id="accidentChart" height="280"></canvas>
+    </div>
+</div>
+
+
         </div>
 
         <script>
-            // RISET FILTER
+            // RESET FILTER
             function resetFilters() {
                 document.getElementById('searchInput').value = '';
                 document.getElementById('districtSelect').value = '';
@@ -323,6 +351,43 @@ $conn->close();
                 },
                 options: {
                     responsive: true
+                }
+            });
+
+            // BAR CHART TOPIK DISTRICT
+            const topDistrictsData = <?php echo json_encode($topDistricts); ?>;
+
+            const ctxTopDistricts = document.getElementById('topDistrictsChart').getContext('2d');
+            const topDistrictsChart = new Chart(ctxTopDistricts, {
+                type: 'polarArea', // Ubah type menjadi 'polarArea'
+                data: {
+                    labels: <?php echo json_encode(array_keys($topDistricts)); ?>,
+                    datasets: [{
+                        label: 'Top 5 Accident by District',
+                        data: <?php echo json_encode(array_values($topDistricts)); ?>,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 205, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)',
+                            'rgb(75, 192, 192)',
+                            'rgb(153, 102, 255)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
                 }
             });
 
