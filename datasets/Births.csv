@@ -2,7 +2,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2017,1,Ciutat Vella,1,el Raval,Boys,283
 2017,1,Ciutat Vella,2,el Barri GÃ²tic,Boys,56
 2017,1,Ciutat Vella,3,la Barceloneta,Boys,51
-2017,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Boys,90
+2017,1,Ciutat Vella,4,Sant Pere, Santa Caterina i la Ribera,Boys,90
 2017,2,Eixample,5,el Fort Pienc,Boys,117
 2017,2,Eixample,6,la Sagrada FamÃ­lia,Boys,207
 2017,2,Eixample,7,la Dreta de l'Eixample,Boys,185
@@ -20,7 +20,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2017,4,Les Corts,19,les Corts,Boys,199
 2017,4,Les Corts,20,la Maternitat i Sant Ramon,Boys,101
 2017,4,Les Corts,21,Pedralbes,Boys,32
-2017,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Boys,17
+"2017,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Boys,17"
 2017,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Boys,122
 2017,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Boys,74
 2017,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Boys,104
@@ -75,7 +75,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2017,1,Ciutat Vella,1,el Raval,Girls,219
 2017,1,Ciutat Vella,2,el Barri GÃ²tic,Girls,53
 2017,1,Ciutat Vella,3,la Barceloneta,Girls,50
-2017,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Girls,90
+"2017,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Girls,90"
 2017,2,Eixample,5,el Fort Pienc,Girls,114
 2017,2,Eixample,6,la Sagrada FamÃ­lia,Girls,183
 2017,2,Eixample,7,la Dreta de l'Eixample,Girls,159
@@ -93,7 +93,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2017,4,Les Corts,19,les Corts,Girls,175
 2017,4,Les Corts,20,la Maternitat i Sant Ramon,Girls,105
 2017,4,Les Corts,21,Pedralbes,Girls,32
-2017,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Girls,20
+"2017,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Girls,20"
 2017,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Girls,110
 2017,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Girls,61
 2017,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Girls,95
@@ -148,7 +148,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2016,1,Ciutat Vella,1,el Raval,Boys,236
 2016,1,Ciutat Vella,2,el Barri GÃ²tic,Boys,53
 2016,1,Ciutat Vella,3,la Barceloneta,Boys,45
-2016,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Boys,92
+"2016,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Boys,92"
 2016,2,Eixample,5,el Fort Pienc,Boys,132
 2016,2,Eixample,6,la Sagrada FamÃ­lia,Boys,192
 2016,2,Eixample,7,la Dreta de l'Eixample,Boys,177
@@ -166,7 +166,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2016,4,Les Corts,19,les Corts,Boys,182
 2016,4,Les Corts,20,la Maternitat i Sant Ramon,Boys,93
 2016,4,Les Corts,21,Pedralbes,Boys,35
-2016,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Boys,16
+"2016,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Boys,16"
 2016,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Boys,116
 2016,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Boys,72
 2016,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Boys,105
@@ -218,11 +218,10 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2016,10,Sant MartÃ­,71,ProvenÃ§als del Poblenou,Boys,90
 2016,10,Sant MartÃ­,72,Sant MartÃ­ de ProvenÃ§als,Boys,96
 2016,10,Sant MartÃ­,73,la Verneda i la Pau,Boys,125
-2016,99,No consta,99,No consta,Boys,0
 2016,1,Ciutat Vella,1,el Raval,Girls,217
 2016,1,Ciutat Vella,2,el Barri GÃ²tic,Girls,45
 2016,1,Ciutat Vella,3,la Barceloneta,Girls,47
-2016,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Girls,80
+"2016,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Girls,80"
 2016,2,Eixample,5,el Fort Pienc,Girls,123
 2016,2,Eixample,6,la Sagrada FamÃ­lia,Girls,208
 2016,2,Eixample,7,la Dreta de l'Eixample,Girls,187
@@ -240,7 +239,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2016,4,Les Corts,19,les Corts,Girls,181
 2016,4,Les Corts,20,la Maternitat i Sant Ramon,Girls,91
 2016,4,Les Corts,21,Pedralbes,Girls,49
-2016,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Girls,22
+"2016,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Girls,22"
 2016,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Girls,122
 2016,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Girls,78
 2016,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Girls,98
@@ -292,11 +291,10 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2016,10,Sant MartÃ­,71,ProvenÃ§als del Poblenou,Girls,80
 2016,10,Sant MartÃ­,72,Sant MartÃ­ de ProvenÃ§als,Girls,90
 2016,10,Sant MartÃ­,73,la Verneda i la Pau,Girls,111
-2016,99,No consta,99,No consta,Girls,2
 2015,1,Ciutat Vella,1,el Raval,Boys,224
 2015,1,Ciutat Vella,2,el Barri GÃ²tic,Boys,48
 2015,1,Ciutat Vella,3,la Barceloneta,Boys,53
-2015,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Boys,90
+"2015,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Boys,90"
 2015,2,Eixample,5,el Fort Pienc,Boys,141
 2015,2,Eixample,6,la Sagrada FamÃ­lia,Boys,196
 2015,2,Eixample,7,la Dreta de l'Eixample,Boys,209
@@ -314,7 +312,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2015,4,Les Corts,19,les Corts,Boys,211
 2015,4,Les Corts,20,la Maternitat i Sant Ramon,Boys,91
 2015,4,Les Corts,21,Pedralbes,Boys,29
-2015,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Boys,29
+"2015,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Boys,29"
 2015,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Boys,108
 2015,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Boys,74
 2015,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Boys,112
@@ -369,7 +367,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2015,1,Ciutat Vella,1,el Raval,Girls,207
 2015,1,Ciutat Vella,2,el Barri GÃ²tic,Girls,52
 2015,1,Ciutat Vella,3,la Barceloneta,Girls,46
-2015,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Girls,76
+"2015,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Girls,76"
 2015,2,Eixample,5,el Fort Pienc,Girls,98
 2015,2,Eixample,6,la Sagrada FamÃ­lia,Girls,197
 2015,2,Eixample,7,la Dreta de l'Eixample,Girls,186
@@ -387,7 +385,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2015,4,Les Corts,19,les Corts,Girls,175
 2015,4,Les Corts,20,la Maternitat i Sant Ramon,Girls,107
 2015,4,Les Corts,21,Pedralbes,Girls,48
-2015,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Girls,15
+"2015,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Girls,15"
 2015,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Girls,117
 2015,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Girls,65
 2015,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Girls,98
@@ -442,7 +440,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2014,1,Ciutat Vella,1,el Raval,Boys,222
 2014,1,Ciutat Vella,2,el Barri GÃ²tic,Boys,36
 2014,1,Ciutat Vella,3,la Barceloneta,Boys,43
-2014,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Boys,94
+"2014,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Boys,94"
 2014,2,Eixample,5,el Fort Pienc,Boys,135
 2014,2,Eixample,6,la Sagrada FamÃ­lia,Boys,224
 2014,2,Eixample,7,la Dreta de l'Eixample,Boys,194
@@ -460,7 +458,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2014,4,Les Corts,19,les Corts,Boys,166
 2014,4,Les Corts,20,la Maternitat i Sant Ramon,Boys,91
 2014,4,Les Corts,21,Pedralbes,Boys,40
-2014,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Boys,22
+"2014,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Boys,22"
 2014,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Boys,152
 2014,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Boys,70
 2014,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Boys,112
@@ -515,7 +513,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2014,1,Ciutat Vella,1,el Raval,Girls,204
 2014,1,Ciutat Vella,2,el Barri GÃ²tic,Girls,61
 2014,1,Ciutat Vella,3,la Barceloneta,Girls,46
-2014,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Girls,73
+"2014,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Girls,73"
 2014,2,Eixample,5,el Fort Pienc,Girls,123
 2014,2,Eixample,6,la Sagrada FamÃ­lia,Girls,209
 2014,2,Eixample,7,la Dreta de l'Eixample,Girls,158
@@ -533,7 +531,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2014,4,Les Corts,19,les Corts,Girls,173
 2014,4,Les Corts,20,la Maternitat i Sant Ramon,Girls,93
 2014,4,Les Corts,21,Pedralbes,Girls,39
-2014,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Girls,18
+"2014,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Girls,18"
 2014,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Girls,106
 2014,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Girls,71
 2014,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Girls,108
@@ -588,7 +586,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2013,1,Ciutat Vella,1,el Raval,Boys,210
 2013,1,Ciutat Vella,2,el Barri GÃ²tic,Boys,49
 2013,1,Ciutat Vella,3,la Barceloneta,Boys,51
-2013,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Boys,93
+"2013,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Boys,93"
 2013,2,Eixample,5,el Fort Pienc,Boys,125
 2013,2,Eixample,6,la Sagrada FamÃ­lia,Boys,164
 2013,2,Eixample,7,la Dreta de l'Eixample,Boys,192
@@ -606,7 +604,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2013,4,Les Corts,19,les Corts,Boys,165
 2013,4,Les Corts,20,la Maternitat i Sant Ramon,Boys,94
 2013,4,Les Corts,21,Pedralbes,Boys,34
-2013,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Boys,29
+"2013,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Boys,29"
 2013,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Boys,139
 2013,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Boys,75
 2013,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Boys,100
@@ -658,11 +656,10 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2013,10,Sant MartÃ­,71,ProvenÃ§als del Poblenou,Boys,119
 2013,10,Sant MartÃ­,72,Sant MartÃ­ de ProvenÃ§als,Boys,114
 2013,10,Sant MartÃ­,73,la Verneda i la Pau,Boys,108
-2013,99,No consta,99,No consta,Boys,7
 2013,1,Ciutat Vella,1,el Raval,Girls,213
 2013,1,Ciutat Vella,2,el Barri GÃ²tic,Girls,45
 2013,1,Ciutat Vella,3,la Barceloneta,Girls,54
-2013,1,Ciutat Vella,4,"Sant Pere, Santa Caterina i la Ribera",Girls,76
+"2013,1,Ciutat Vella,4,""Sant Pere, Santa Caterina i la Ribera"",Girls,76"
 2013,2,Eixample,5,el Fort Pienc,Girls,130
 2013,2,Eixample,6,la Sagrada FamÃ­lia,Girls,179
 2013,2,Eixample,7,la Dreta de l'Eixample,Girls,177
@@ -680,7 +677,7 @@ Year,District Code,District Name,Neighborhood Code,Neighborhood Name,Gender,Numb
 2013,4,Les Corts,19,les Corts,Girls,186
 2013,4,Les Corts,20,la Maternitat i Sant Ramon,Girls,79
 2013,4,Les Corts,21,Pedralbes,Girls,31
-2013,5,SarriÃ -Sant Gervasi,22,"Vallvidrera, el Tibidabo i les Planes",Girls,18
+"2013,5,SarriÃ -Sant Gervasi,22,""Vallvidrera, el Tibidabo i les Planes"",Girls,18"
 2013,5,SarriÃ -Sant Gervasi,23,SarriÃ ,Girls,117
 2013,5,SarriÃ -Sant Gervasi,24,les Tres Torres,Girls,70
 2013,5,SarriÃ -Sant Gervasi,25,Sant Gervasi - la Bonanova,Girls,92

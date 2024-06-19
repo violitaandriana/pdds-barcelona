@@ -55,7 +55,6 @@ try {
   echo "<script>alert('Error retrieving data: " . $e->getMessage() . "');</script>";
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -76,10 +75,20 @@ try {
       align-items: center;
     }
 
-    .chart, .table-responsive {
+    .chart {
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    .table-responsive {
+    display: flex;
+    justify-content: center;
+    }
+    
+    #birthTable {
+      width: 100%; /* Membuat tabel memenuhi lebar maksimal yang tersedia */
+      max-width: 800px; /* Atur lebar maksimum tabel sesuai kebutuhan */
     }
 
     .sidebar-container {
@@ -202,7 +211,7 @@ try {
 
       <!-- Tabel data -->
       <div class="table-responsive">
-        <table id="birthTable" class="display">
+        <table class="table table-striped table-bordered" id="birthTable" class="display">
           <thead>
             <tr>
               <th>Year</th>
@@ -233,8 +242,6 @@ try {
       </div>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const sidebarContainer = document.querySelector(".sidebar-container");
     const gridContainer = document.querySelector(".grid-container");
