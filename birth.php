@@ -56,67 +56,80 @@ try {
 }
 ?>
 
-<style>
-  .sidebar-container {
-    height: auto !important;
-  }
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Birth Rate Pattern</title>
+  <style>
+    body {
+      background-color: #edf2fa;
+    }
 
-  .filter-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+    .birth-content h1 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .birth-filter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  .filter-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+    .chart, .table-responsive {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  /* Filter item styles */
-  .filter-item {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
+    .sidebar-container {
+      height: auto !important;
+    }
 
-  .filter-item label {
-    margin-right: 10px;
-    font-weight: bold;
-  }
+    .filter-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #edf2fa;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-  .filter-item select {
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    min-width: 150px;
-    margin-right: 20px;
-  }
+    .filter-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-  .filter-item button {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    .filter-item label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
 
-  .filter-item button:hover {
-    background-color: #0056b3;
-  }
-</style>
+    .filter-item select {
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      min-width: 150px;
+      margin-right: 20px;
+    }
 
+    .filter-item button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .filter-item button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
 <body>
   <div class="grid-container">
     <!-- Sidebar -->
@@ -149,10 +162,6 @@ try {
     </div>
     <div class="birth-content">
       <h1>Birth Rate Pattern</h1>
-      <p>
-        Birth Rate Pattern memberikan visualisasi untuk mengetahui pola kelahiran (melihat apakah ada peningkatan /
-        penurunan) pada distrik tertentu. Filter berdasarkan tahun mulai hingga tahun selesai dan gender.
-      </p>
       <div class="birth-filter">
         <div class="filter-box">
           <form method="GET" action="birth.php" class="filter-item">
@@ -187,7 +196,9 @@ try {
         </div>
       </div>
       <!-- Tambahkan canvas untuk chart -->
-      <canvas id="myChart"></canvas>
+      <div class="chart">
+        <canvas id="myChart"></canvas>
+      </div>
 
       <!-- Tabel data -->
       <div class="table-responsive">
@@ -223,6 +234,7 @@ try {
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const sidebarContainer = document.querySelector(".sidebar-container");
     const gridContainer = document.querySelector(".grid-container");
@@ -269,7 +281,8 @@ try {
         label: district,
         data: data,
         fill: false,
-        borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16), // Random color
+        borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'), // Random color
+        borderWidth: 2,
         tension: 0.1
       };
       datasets.push(dataset);
@@ -283,8 +296,19 @@ try {
       },
       options: {
         scales: {
+          x: {
+            type: 'category', // Menggunakan category untuk sumbu x karena 'Year' adalah kategori
+            title: {
+              display: true,
+              text: 'Year'
+            }
+          },
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Number of Births' // Sesuaikan teks ini dengan yang Anda inginkan
+            }
           }
         }
       }
@@ -298,3 +322,4 @@ try {
     closeSidebar();
   </script>
 </body>
+</html>
