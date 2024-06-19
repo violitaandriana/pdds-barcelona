@@ -172,13 +172,13 @@ foreach ($documents as $document) {
           </select>
         </form>
         <div class="chart">
-          <h4>Average Value of Indicators</h4>
+          <h4>Average Value of Indicators (O3, NO2, PM10)</h4>
           <div class="chart-container-1">
             <canvas id="bubbleChart"></canvas>
           </div>
         </div>
         <div class="chart">
-          <h4>Air Quality of Indicators</h4>
+          <h4>Quality of Indicators (O3, NO2, PM10)</h4>
           <div class="chart-container-2">
             <canvas id="barChart"></canvas>
           </div>

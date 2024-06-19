@@ -2,15 +2,15 @@
 include './includes/head.php';
 
 // MongoDB Connection
-require 'autoload.php'; // Memuat MongoDB PHP Library
+require 'autoload.php'; // Load MongoDB PHP Library
 use MongoDB\Client;
 
 $client = new Client("mongodb://localhost:27017");
-$collection = $client->pdds_barcelona->Birth_Rate;
+$collection = $client->barcelona->births;
 
-// Ambil data dari MongoDB dan persiapkan untuk Chart.js
+// Fetch data from MongoDB and prepare it for Chart.js
 $dataPoints = [];
-$tableData = []; // Data untuk tabel
+$tableData = []; // Data for the table
 
 $startYear = isset($_GET['start_year']) ? (int)$_GET['start_year'] : null;
 $endYear = isset($_GET['end_year']) ? (int)$_GET['end_year'] : null;
@@ -34,13 +34,13 @@ try {
     $gender = $document['Gender'];
     $number = $document['Number'];
 
-    // Masukkan data ke dalam dataPoints untuk setiap distrik
-    if (!isset($dataPoints[$districtName][$year])) {
-      $dataPoints[$districtName][$year] = 0;
+    // Add data to dataPoints for each district
+    if (!isset($dataPoints[$districtName])) {
+      $dataPoints[$districtName] = 0;
     }
-    $dataPoints[$districtName][$year] += $number;
+    $dataPoints[$districtName] += $number;
 
-    // Masukkan data ke dalam tableData untuk tabel
+    // Add data to tableData for the table
     $tableData[] = [
       'Year' => $year,
       'District Code' => $districtName,
@@ -87,8 +87,8 @@ try {
     }
     
     #birthTable {
-      width: 100%; /* Membuat tabel memenuhi lebar maksimal yang tersedia */
-      max-width: 800px; /* Atur lebar maksimum tabel sesuai kebutuhan */
+      width: 100%; /* Make the table take the full available width */
+      max-width: 800px; /* Set the maximum width of the table */
     }
 
     .sidebar-container {
@@ -204,12 +204,12 @@ try {
           </form>
         </div>
       </div>
-      <!-- Tambahkan canvas untuk chart -->
+      <!-- Add canvas for chart -->
       <div class="chart">
         <canvas id="myChart"></canvas>
       </div>
 
-      <!-- Tabel data -->
+      <!-- Data table -->
       <div class="table-responsive">
         <table class="table table-striped table-bordered" id="birthTable" class="display">
           <thead>
@@ -263,58 +263,43 @@ try {
       gridContainer.style.gridTemplateColumns = '1fr 3fr';
     }
 
-    // Prepare data untuk digunakan dalam Chart.js
+    // Prepare data for use in Chart.js
     const dataPoints = <?php echo json_encode($dataPoints); ?>;
 
-    // Dapatkan semua tahun dari dataPoints
-    const allYears = [];
-    for (const district in dataPoints) {
-      for (const year in dataPoints[district]) {
-        if (!allYears.includes(year)) {
-          allYears.push(year);
-        }
-      }
-    }
-
-    // Sort the years numerically
-    allYears.sort((a, b) => a - b);
-
-    const labels = allYears;
-
-    const datasets = [];
-    Object.keys(dataPoints).forEach((district) => {
-      const data = allYears.map(year => dataPoints[district][year] || 0);
-      const dataset = {
-        label: district,
-        data: data,
-        fill: false,
-        borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'), // Random color
-        borderWidth: 2,
-        tension: 0.1
-      };
-      datasets.push(dataset);
-    });
+    // Get district names and total births
+    const labels = Object.keys(dataPoints);
+    const data = Object.values(dataPoints);
 
     const config = {
       type: 'line',
       data: {
         labels: labels,
-        datasets: datasets
+        datasets: [{
+          label: 'Total Births',
+          data: data,
+          fill: false,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          tension: 0.1,
+        }]
       },
       options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
         scales: {
           x: {
-            type: 'category', // Menggunakan category untuk sumbu x karena 'Year' adalah kategori
             title: {
               display: true,
-              text: 'Year'
+              text: 'District Name'
             }
           },
           y: {
             beginAtZero: true,
             title: {
               display: true,
-              text: 'Number of Births' // Sesuaikan teks ini dengan yang Anda inginkan
+              text: 'Number of Births'
             }
           }
         }
