@@ -23,7 +23,7 @@ while ($row = $districtResult->fetch_assoc()) {
 }
 
 // AMBIL DATA NEIGHBORHOOD NAME BERDASAR DISTRICT NAME
-$neighborhood = array(); 
+$neighborhood = array();
 if ($selectedDistrict) {
     $neighborhoodResult = $conn->query("SELECT DISTINCT neighborhood_name FROM accident WHERE district_name = '" . $conn->real_escape_string($selectedDistrict) . "'");
     while ($row = $neighborhoodResult->fetch_assoc()) {
@@ -133,20 +133,24 @@ $conn->close();
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        gap: 10px; /* Mengurangi jarak antar card */
+        gap: 10px;
+        /* Mengurangi jarak antar card */
     }
 
     .chart-container .col-right {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px; /* Mengurangi jarak antar card */
-        width: 30%; /* Lebar card pie chart dan total korban */
+        gap: 10px;
+        /* Mengurangi jarak antar card */
+        width: 30%;
+        /* Lebar card pie chart dan total korban */
     }
 
     .pie-chart-container,
     .total-korban-container {
-        width: 100%; /* Menyamakan lebar card pie chart dan total korban */
+        width: 100%;
+        /* Menyamakan lebar card pie chart dan total korban */
         max-width: 300px;
     }
 
@@ -240,32 +244,32 @@ $conn->close();
             </form>
 
             <div class="chart-container">
-    <!-- TOP 5 KECELAKAAN -->
-    <div class="col container-chart chart-card" style="text-align: center;">
-        <p class="card-title">TOP 5 ACCIDENT BY DISTRICT</p><br>
-        <canvas id="topDistrictsChart" height="210"></canvas>
-    </div>
+                <!-- TOP 5 KECELAKAAN -->
+                <div class="col container-chart chart-card" style="text-align: center;">
+                    <p class="card-title">TOP 5 ACCIDENT BY DISTRICT</p><br>
+                    <canvas id="topDistrictsChart" height="210"></canvas>
+                </div>
 
-    <!-- CARD DAN PIE CHART -->
-    <div class="col col-right">
-        <!-- CARD TOTAL KORBAN -->
-        <div class="card-body chart-card total-korban-container" style="text-align: center;">
-            <p class="card-title">TOTAL KORBAN</p>
-            <p class="card-text" style="font-size: 30px;"><?php echo $totalAccidents; ?></p>
-        </div>
+                <!-- CARD DAN PIE CHART -->
+                <div class="col col-right">
+                    <!-- CARD TOTAL KORBAN -->
+                    <div class="card-body chart-card total-korban-container" style="text-align: center;">
+                        <p class="card-title">TOTAL KORBAN</p>
+                        <p class="card-text" style="font-size: 30px;"><?php echo $totalAccidents; ?></p>
+                    </div>
 
-        <!-- PIE CHART PERBANDINGAN JUMLAH CEDERA RINGAN DAN SERIUS  -->
-        <div class="pie-chart-container chart-card">
-            <canvas id="injuryChart"></canvas>
-        </div>
-    </div>
+                    <!-- PIE CHART PERBANDINGAN JUMLAH CEDERA RINGAN DAN SERIUS  -->
+                    <div class="pie-chart-container chart-card">
+                        <canvas id="injuryChart"></canvas>
+                    </div>
+                </div>
 
-    <!-- KECELAKAAN BY PART OF THE DAY -->
-    <div class="col container-chart chart-card" style="text-align: center;">
-        <p class="card-title">ACCIDENT BY PART OF THE DAY</p><br>
-        <canvas id="accidentChart" height="280"></canvas>
-    </div>
-</div>
+                <!-- KECELAKAAN BY PART OF THE DAY -->
+                <div class="col container-chart chart-card" style="text-align: center;">
+                    <p class="card-title">ACCIDENT BY PART OF THE DAY</p><br>
+                    <canvas id="accidentChart" height="280"></canvas>
+                </div>
+            </div>
 
 
         </div>
@@ -354,7 +358,7 @@ $conn->close();
                 }
             });
 
-            // BAR CHART TOPIK DISTRICT
+            // BAR CHART TOP 5 ACCIDENT DISTRICT
             const topDistrictsData = <?php echo json_encode($topDistricts); ?>;
 
             const ctxTopDistricts = document.getElementById('topDistrictsChart').getContext('2d');
